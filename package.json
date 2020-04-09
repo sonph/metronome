@@ -1,0 +1,28 @@
+{
+  "name": "metronome",
+  "version": "1.0.0",
+  "description": "Web-based metronome with beat counter and song charting.",
+  "main": "./src/index.js",
+  "repository": "git@github.com:sonph/metronome.git",
+  "author": "sonph",
+  "license": "MIT",
+  "private": false,
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.9.0",
+    "@babel/plugin-transform-runtime": "^7.9.0",
+    "@babel/preset-env": "^7.9.5",
+    "@testing-library/dom": "^7.2.1",
+    "@testing-library/jest-dom": "^5.5.0",
+    "babel-jest": "^25.3.0",
+    "jest": "^25.3.0"
+  },
+  "jest": {
+    "setupFilesAfterEnv": [
+      "@testing-library/jest-dom"
+    ]
+  }
+}
