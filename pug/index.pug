@@ -8,9 +8,8 @@ html(lang='en')
 
     link(rel='stylesheet' type='text/css' href='src/css/app.css')
 
-    script(type='text/javascript' src='//cwilso.github.io/AudioContext-MonkeyPatch/AudioContextMonkeyPatch.js')
-    script(type='text/javascript' src='src/js/metronome.js')
-    script(type='text/javascript' src='src/js/metronomeworker.js')
+    script(src='//cwilso.github.io/AudioContext-MonkeyPatch/AudioContextMonkeyPatch.js')
+    script(src='dist/bundle.js')
 
   body
     div#controls
@@ -23,13 +22,13 @@ html(lang='en')
             max='200.0'
             step='1'
             value='120'
-            onInput='tempo = event.target.value; document.getElementById("showTempo").innerText=tempo;')
+            onInput='metronome.setTempo(event.target.value); document.getElementById("showTempo").innerText=event.target.value;')
       div Resolution:
-        select(onchange='noteResolution = this.selectedIndex;')
-          option 16th notes
-          option 8th notes
-          option quarter notes
+        select(onchange='metronome.setNoteResolution(this.selectedIndex);')
+          option quarter
+          option 8th
+          option 16th
       div
-        a.play(onclick='this.innerText = play();') PLAY
+        a.play(onclick='this.innerText = metronome.play();') PLAY
       div.container
         canvas#visualization
