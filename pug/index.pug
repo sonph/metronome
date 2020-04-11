@@ -1,4 +1,34 @@
-html
+doctype html
+
+html(lang='en')
   head
+    meta(charset='utf-8')
+    meta(http-equiv='X-UA-Compatible' content='IE=edge')
+    meta(name='viewport' content='width=device-width, initial-scale=1')
+
+    link(rel='stylesheet' type='text/css' href='src/css/app.css')
+
+    script(src='//cwilso.github.io/AudioContext-MonkeyPatch/AudioContextMonkeyPatch.js')
+    script(src='dist/bundle.js')
+
   body
-    h1 Hello World!
+    div#controls
+      div#tempoBox Tempo:
+        span#showTempo 120
+        | BPM
+        input#tempo(
+            type='range'
+            min='30.0'
+            max='200.0'
+            step='1'
+            value='120'
+            onInput='metronome.setTempo(event.target.value); document.getElementById("showTempo").innerText=event.target.value;')
+      div Resolution:
+        select(onchange='metronome.setNoteResolution(this.selectedIndex);')
+          option quarter
+          option 8th
+          option 16th
+      div
+        a.play(onclick='this.innerText = metronome.play();') PLAY
+      div.container
+        canvas#visualization
