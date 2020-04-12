@@ -42,10 +42,11 @@ class SongChart {
       curMeasure: 1,
       // Current section name and length in measures.
       curSectionName: '',
-      curSectionLength: 0
+      curSectionLength: 0,
+      curSectionIndex: 0,
+      sections: this.json.sections,
     };
 
-    this.curSectionIndex = 0;
     // Current tick of the beat. 0 to 3 (16th notes).
     this.curTick = 0;
 
@@ -54,12 +55,12 @@ class SongChart {
   }
 
   reset() {
-    this.curSectionIndex = 0;
+    this.uiData.curSectionIndex = 0;
     this.curTick = 0;
     this.uiData.curBeat = 1;
     this.uiData.curMeasure = 1;
-    this.uiData.curSectionName = this.json.sections[this.curSectionIndex].name;
-    this.uiData.curSectionLength = this.json.sections[this.curSectionIndex].length;
+    this.uiData.curSectionName = this.json.sections[this.uiData.curSectionIndex].name;
+    this.uiData.curSectionLength = this.json.sections[this.uiData.curSectionIndex].length;
   }
 
   /** Returns false if the end has been reached. */
@@ -85,7 +86,7 @@ class SongChart {
   /** Update next measure. If it's the end of a section, update the next section. */
   nextMeasure() {
     this.uiData.curMeasure += 1;
-    if (this.uiData.curMeasure > this.json.sections[this.curSectionIndex].length) {
+    if (this.uiData.curMeasure > this.json.sections[this.uiData.curSectionIndex].length) {
       this.uiData.curMeasure = 1;
       return this.nextSection();
     }
@@ -94,13 +95,13 @@ class SongChart {
 
   /** Update next section. Returns false if the end has been reached. */
   nextSection() {
-    this.curSectionIndex += 1;
-    if (this.curSectionIndex >= this.json.sections.length) {
+    this.uiData.curSectionIndex += 1;
+    if (this.uiData.curSectionIndex >= this.json.sections.length) {
       this.reset();
       return false;
     }
-    this.uiData.curSectionName = this.json.sections[this.curSectionIndex].name;
-    this.uiData.curSectionLength = this.json.sections[this.curSectionIndex].length;
+    this.uiData.curSectionName = this.json.sections[this.uiData.curSectionIndex].name;
+    this.uiData.curSectionLength = this.json.sections[this.uiData.curSectionIndex].length;
     return true;
   }
 

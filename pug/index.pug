@@ -38,6 +38,7 @@ html(lang='en')
             option(v-bind:value="2") 16th
         div
           a(v-on:click='metronomeToggle()') {{ metronome.toggleLabel }}
+      div
         div
           | Measure counter:
           span {{ metronome.curMeasure }}
@@ -54,5 +55,9 @@ html(lang='en')
             span {{ songChart.curBeat }}
             | /
             span {{ songChart.curSectionLength }}
-        div.container
-          canvas#visualization
+      div.container
+        canvas#visualization
+      div#songChart
+        div.section(v-for='(section, index) in songChart.sections')
+          div(v-bind:class='{ bold: index == songChart.curSectionIndex, hide: index < songChart.curSectionIndex }')
+            | {{ index }}: {{ section.name }} ({{ section.length }})

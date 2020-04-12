@@ -2,3 +2,20 @@ body {
   padding: 5em;
   font-family: monospace;
 }
+
+div#controls {
+  border: 1px solid #c0c0c0;
+}
+
+canvas#visualization {
+  height: 400px;
+  border: 1px solid #c0c0c0;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+.hide {
+  display: none;
+}
