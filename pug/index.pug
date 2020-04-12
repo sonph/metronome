@@ -1,3 +1,4 @@
+// See pug/index.pug.
 doctype html
 
 html(lang='en')
@@ -29,6 +30,15 @@ html(lang='en')
           option 8th
           option 16th
       div
-        a.play(onclick='this.innerText = metronome.play();') PLAY
+        a#mStartButton START
+      //- TODO(sonph): Beat counter and section name are updated on the last
+      //- 16th note of the last measure. It should be on the 1st 16th note of
+      //- the current measure.
+      div
+        | Beat counter:
+        span#mBeatCounter 0
+      div
+        | Current section:
+        span#sectionName
       div.container
         canvas#visualization

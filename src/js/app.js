@@ -1,11 +1,34 @@
 import * as audioclass from './audio.js'
 import * as metronomeclass from './metronome.js'
 import * as visualizationclass from './visualization.js'
+import * as songchartclass from './songchart.js'
 
-window.init =
-    function() {
-  console.log('[app.js] init()');
+let nutJson = {
+  "name": "Nứt",
+  "artist": "Ngọt",
+  "tempo": "145",
+  "time_signature": "4/4",
+  "sections": [
+    {
+      "name": "Intro",
+      "measures": 4,
+    },
+    {
+      "name": "Verse",
+      "measures": 4,
+    },
+    {
+      "name": "Prechorus",
+      "measures": 4,
+    },
+    {
+      "name": "Chorus",
+      "measures": 4,
+    }
+  ]
+};
 
+window.init = function() {
   // First, let's shim the requestAnimationFrame API, with a setTimeout fallback
   window.requestAnimFrame = (function() {
     return window.requestAnimationFrame || window.webkitRequestAnimationFrame ||
@@ -15,16 +38,21 @@ window.init =
         };
   })();
 
-  var audio = new audioclass.Audio();
+  let songChart = new songchartclass.SongChart(
+    nutJson, document.getElementById('sectionName'));
+
+  let audio = new audioclass.Audio();
   audio.unlockAudio();
   audio.loadAudioFiles();
 
-  var viz = new visualizationclass.Viz(window, document, audio);
+  let viz = new visualizationclass.Viz(window, document, audio);
   viz.initCanvas();
 
-  var metronome = new metronomeclass.Metronome(audio, viz);
+  let metronome = new metronomeclass.Metronome(audio, viz);
+  metronome.setSongChart(songChart);
+  metronome.setDomElements(document);
 
   window.metronome = metronome;
 }
 
-    window.addEventListener('load', window.init);
+window.addEventListener('load', window.init);

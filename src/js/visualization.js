@@ -72,8 +72,8 @@ class Viz {
 
   resetCanvas() {
     // Resize canvas. This will also clears the canvas.
-    this.canvas.width = window.innerWidth;
-    this.canvas.height = window.innerHeight;
+    this.canvas.width = this.window.innerWidth;
+    this.canvas.height = this.window.innerHeight;
 
     // Scroll to the top left.
     this.window.scrollTo(0, 0);

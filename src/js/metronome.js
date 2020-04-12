@@ -1,3 +1,5 @@
+import * as utils from './utils.js'
+
 /** @const {number} */
 var QUARTER_NOTE = 0;
 /** @const {number} */
@@ -38,6 +40,13 @@ class Metronome {
 
     // The start time of the entire sequence.
     this.startTime;
+
+    this.songChart;
+
+    this.beatCounter = 0;
+
+    this.domBeatCounter;
+    this.domStartButton;
   }
 
   setTempo(tempo) {
@@ -70,6 +79,14 @@ class Metronome {
     this.nextNoteTime += 0.25 * secondsPerBeat;
     // Advance the beat number, wrapping to zero
     this.current16thNote = (this.current16thNote + 1) % 16;
+    if (this.current16thNote == 0) {
+      this.incrementBeatCounter();
+    }
+
+    if (!this.songChart.tick()) {
+      console.log('[metronome.js] Stopping at end of song.');
+      this.stop();
+    }
   }
 
   scheduleNote(beatNumber, time) {
@@ -102,21 +119,54 @@ class Metronome {
     }
   }
 
-  /** Starts the metronome. */
-  play() {
-    console.log('[metronomeclass.js] play()');
-    this.isPlaying = !this.isPlaying;
-    if (this.isPlaying) {
-      this.current16thNote = 0;
-      this.nextNoteTime = this.audioContext.currentTime;
-      this.timerWorker.postMessage('START');
-      return 'STOP';
+  toggle() {
+    if (!this.isPlaying) {
+      this.start();
     } else {
-      this.timerWorker.postMessage('STOP');
-      // TODO(sonph): remove this return and relies on isPlaying() attribute in
-      // UI instead.
-      return 'PLAY';
+      this.stop();
     }
+  }
+
+  /** Starts the metronome. */
+  start() {
+    this.isPlaying = true;
+    this.current16thNote = 0;
+    this.beatCounter = 0;
+    this.nextNoteTime = this.audioContext.currentTime;
+    this.timerWorker.postMessage('START');
+    this.domStartButton.innerText = 'STOP';
+  }
+
+  stop() {
+    this.isPlaying = false;
+    this.current16thNote = 0;
+    this.beatCounter = 0;
+    this.timerWorker.postMessage('STOP');
+    this.domStartButton.innerText = 'START';
+  }
+
+  setSongChart(songChart) {
+    utils.checkIsDefined('songChart', songChart);
+    this.songChart = songChart;
+  }
+
+  setBeatCounter(num) {
+    this.beatCounter = num;
+    this.domBeatCounter.innerText = this.beatCounter;
+  }
+
+  incrementBeatCounter() {
+    this.beatCounter += 1;
+    this.domBeatCounter.innerText = this.beatCounter;
+  }
+
+  setDomElements(document) {
+    this.domStartButton = document.getElementById('mStartButton');
+    utils.checkIsDefined('startButton', this.domStartButton);
+    this.domStartButton.onclick = (() => { this.toggle() });
+
+    this.domBeatCounter = document.getElementById('mBeatCounter');
+    utils.checkIsDefined('beatCounter', this.domBeatCounter);
   }
 }
 
