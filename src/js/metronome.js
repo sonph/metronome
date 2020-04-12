@@ -15,7 +15,6 @@ class Metronome {
     /** @type {!audio.Audio} */
     this.audio = audio;
     this.audioContext = this.audio.getAudioContext();
-    this.audioContext.resume();
 
     this.viz = viz;
 
@@ -128,6 +127,9 @@ class Metronome {
   /** Starts the metronome. */
   start() {
     if (!this.isPlaying) {
+      // Must resume audio context after a user gesture on the page.
+      // https://goo.gl/7K7W
+      this.audioContext.resume();
       this.isPlaying = true;
       this.current16thNote = 0;
       this.uiData.curMeasure = 1;
