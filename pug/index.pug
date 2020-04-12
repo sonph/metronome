@@ -18,14 +18,14 @@ html(lang='en')
       div#controls
         div#tempoBox
           div#tempoEditButtons
-            button(v-on:click='metronomeTempoHalve()') ÷2
-            button(v-on:click='metronomeTempoDecrementBy10()') -10
-            button(v-on:click='metronomeTempoDecrementBy5()') -5
-            button(v-on:click='metronomeTempoDecrement()') -1
-            button(v-on:click='metronomeTempoIncrement()') +1
-            button(v-on:click='metronomeTempoIncrementBy5()') +5
-            button(v-on:click='metronomeTempoIncrementBy10()') +10
-            button(v-on:click='metronomeTempoDouble()') ×2
+            a(v-on:click='metronomeTempoHalve()') ÷2
+            a(v-on:click='metronomeTempoDecrementBy10()') -10
+            a(v-on:click='metronomeTempoDecrementBy5()') -5
+            a(v-on:click='metronomeTempoDecrement()') -1
+            a(v-on:click='metronomeTempoIncrement()') +1
+            a(v-on:click='metronomeTempoIncrementBy5()') +5
+            a(v-on:click='metronomeTempoIncrementBy10()') +10
+            a(v-on:click='metronomeTempoDouble()') ×2
           input(
               name='tempo' id='tempo'
               type='number' min='0' step='1' pattern='[0-9]*' inputmode='numeric'
@@ -62,5 +62,5 @@ html(lang='en')
           div(v-bind:class='{ bold: index == songChart.curSectionIndex, hide: index < songChart.curSectionIndex }')
             | {{ index }}: {{ section.name }} ({{ section.length }})
         div
-          span(v-on:click='songChartAppendSection()')
+          a(v-on:click='songChartAppendSection()')
             | + Add section

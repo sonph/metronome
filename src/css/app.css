@@ -1,6 +1,6 @@
 body {
-  padding: 5em;
   font-family: monospace;
+  font-size: 1.5em;
 }
 
 div#controls {
@@ -18,4 +18,8 @@ canvas#visualization {
 
 .hide {
   display: none;
+}
+
+a:hover {
+  text-decoration: underline;
 }
