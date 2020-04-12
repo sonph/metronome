@@ -27,8 +27,8 @@ const NUT_JSON = {
 
 /** Class for handling song charting. */
 class SongChart {
-  constructor() {
-    this.json = NUT_JSON;
+  constructor(json) {
+    this.json = json || NUT_JSON;
 
     this.uiData = {};
 
