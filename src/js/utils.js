@@ -5,10 +5,8 @@ function checkState(cond, message) {
 }
 
 function checkIsDefined(name, value) {
-  if (typeof value !== 'undefined') {
-    if (value) {
-      return;
-    }
+  if (typeof value !== 'undefined' && value) {
+    return;
   }
   console.error("[ERROR] %s is not defined: %s", name, value);
 }
