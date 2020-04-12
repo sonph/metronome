@@ -44,7 +44,7 @@ class Metronome {
     this.songChartSkippedFirstNote = false;
 
     this.uiData = {
-      currentBeat: 0,
+      curMeasure: 1,
       toggleLabel: 'START',
       tempo: 120,
       noteResolution: QUARTER_NOTE
@@ -74,7 +74,7 @@ class Metronome {
     // Advance the beat number, wrapping to zero
     this.current16thNote = (this.current16thNote + 1) % 16;
     if (this.current16thNote == 0) {
-      this.uiData.currentBeat += 1;
+      this.uiData.curMeasure += 1;
     }
 
     if (this.songChartSkippedFirstNote) {
@@ -130,7 +130,7 @@ class Metronome {
     if (!this.isPlaying) {
       this.isPlaying = true;
       this.current16thNote = 0;
-      this.uiData.currentBeat = 0;
+      this.uiData.curMeasure = 1;
       this.uiData.toggleLabel = 'STOP';
       this.nextNoteTime = this.audioContext.currentTime;
       this.timerWorker.postMessage('START');

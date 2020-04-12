@@ -39,8 +39,8 @@ html(lang='en')
         div
           a(v-on:click='metronomeToggle()') {{ metronome.toggleLabel }}
         div
-          | Beat counter:
-          span {{ metronome.currentBeat }}
+          | Measure counter:
+          span {{ metronome.curMeasure }}
         div
           div
             span {{ songChart.name }}
