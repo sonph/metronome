@@ -38,9 +38,6 @@ html(lang='en')
             option(v-bind:value="2") 16th
         div
           a(v-on:click='metronomeToggle()') {{ metronome.toggleLabel }}
-        //- TODO(sonph): Beat counter and section name are updated on the last
-        //- 16th note of the last measure. It should be on the 1st 16th note of
-        //- the current measure.
         div
           | Beat counter:
           span {{ metronome.currentBeat }}

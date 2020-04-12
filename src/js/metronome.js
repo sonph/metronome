@@ -38,6 +38,10 @@ class Metronome {
     this.startTime;
 
     this.songChart;
+    // At the beginning the song chart already starts at the first beat. However
+    // the metronome audio has yet to schedule the first note. So don't tick the
+    // the songchart on the first note.
+    this.songChartSkippedFirstNote = false;
 
     this.uiData = {
       currentBeat: 0,
@@ -73,9 +77,13 @@ class Metronome {
       this.uiData.currentBeat += 1;
     }
 
-    if (!this.songChart.tick()) {
-      console.log('[metronome.js] Stopping at end of song.');
-      this.stop();
+    if (this.songChartSkippedFirstNote) {
+      if (!this.songChart.tick()) {
+        console.log('[metronome.js] Stopping at end of song.');
+        this.stop();
+      }
+    } else {
+      this.songChartSkippedFirstNote = true;
     }
   }
 
@@ -129,12 +137,14 @@ class Metronome {
     }
   }
 
+  /** Stops the metronome and resets. For now assumes reset from the beginning. */
   stop() {
     if (this.isPlaying) {
       this.isPlaying = false;
       this.current16thNote = 0;
       this.timerWorker.postMessage('STOP');
       this.uiData.toggleLabel = 'START';
+      this.songChartSkippedFirstNote = false;
       this.songChart.reset();
     }
   }
