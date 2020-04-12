@@ -109,6 +109,13 @@ class SongChart {
     return this.uiData;
   }
 
+  appendSection() {
+    this.json.sections.push({
+        "name": "Untitled",
+        "length": 8,
+    });
+  }
+
   /**
    * Fetches song chart from given url.
    * @param {string} url Url.

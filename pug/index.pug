@@ -61,3 +61,6 @@ html(lang='en')
         div.section(v-for='(section, index) in songChart.sections')
           div(v-bind:class='{ bold: index == songChart.curSectionIndex, hide: index < songChart.curSectionIndex }')
             | {{ index }}: {{ section.name }} ({{ section.length }})
+        div
+          span(v-on:click='songChartAppendSection()')
+            | + Add section

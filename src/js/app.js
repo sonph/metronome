@@ -41,7 +41,9 @@ window.init = function() {
       metronomeTempoIncrement: (() => { metronome.tempoIncrement(); }),
       metronomeTempoIncrementBy5: (() => { metronome.tempoIncrementBy5(); }),
       metronomeTempoIncrementBy10: (() => { metronome.tempoIncrementBy10(); }),
-      metronomeTempoDouble: (() => { metronome.tempoDouble(); })
+      metronomeTempoDouble: (() => { metronome.tempoDouble(); }),
+
+      songChartAppendSection: (() => { songChart.appendSection(); })
     }
   });
 
