@@ -1,11 +1,36 @@
 import * as utils from './utils.js';
 
+const NUT_JSON = {
+  "name": "Nứt",
+  "artist": "Ngọt",
+  "tempo": "145",
+  "time_signature": "4/4",
+  "sections": [
+    {
+      "name": "Intro",
+      "measures": 4,
+    },
+    {
+      "name": "Verse",
+      "measures": 4,
+    },
+    {
+      "name": "Prechorus",
+      "measures": 4,
+    },
+    {
+      "name": "Chorus",
+      "measures": 4,
+    }
+  ]
+};
+
 /** Class for handling song charting. */
 class SongChart {
-  constructor(json, sectionNameItem) {
-    utils.checkIsDefined('#sectionName', sectionNameItem);
-    this.json = json;
-    this.sectionNameItem = sectionNameItem;
+  constructor() {
+    this.json = NUT_JSON;
+
+    this.uiData = {};
 
     this.curSectionIndex;
     this.curSectionLengthTicks;
@@ -23,7 +48,7 @@ class SongChart {
   }
 
   updateSectionName() {
-    this.sectionNameItem.innerText = this.json.sections[this.curSectionIndex].name;
+    this.uiData.currentSectionName = this.json.sections[this.curSectionIndex].name;
   }
 
   /** 
@@ -51,6 +76,10 @@ class SongChart {
     this.curSectionMark = 0;
     this.updateSectionName();
     return true;
+  }
+
+  getUiData() {
+    return this.uiData;
   }
 
   /**

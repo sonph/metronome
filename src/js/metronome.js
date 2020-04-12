@@ -1,11 +1,11 @@
 import * as utils from './utils.js'
 
 /** @const {number} */
-var QUARTER_NOTE = 0;
+const QUARTER_NOTE = 0;
 /** @const {number} */
-var EIGHTH_NOTE = 1;
+const EIGHTH_NOTE = 1;
 /** @const {number} */
-var SIXTEENTH_NOTE = 2;
+const SIXTEENTH_NOTE = 2;
 
 /** Metronome class for handling scheduling and current beat. */
 class Metronome {
@@ -15,6 +15,7 @@ class Metronome {
     /** @type {!audio.Audio} */
     this.audio = audio;
     this.audioContext = this.audio.getAudioContext();
+    this.audioContext.resume();
 
     this.viz = viz;
 
@@ -30,11 +31,6 @@ class Metronome {
     // What note is currently last scheduled?
     this.current16thNote;
 
-    // tempo (in beats per minute)
-    this.tempo = 120.0;
-
-    this.noteResolution = QUARTER_NOTE;
-
     // Length of 'beep' (in seconds)
     this.noteLength = 0.05;
 
@@ -43,18 +39,12 @@ class Metronome {
 
     this.songChart;
 
-    this.beatCounter = 0;
-
-    this.domBeatCounter;
-    this.domStartButton;
-  }
-
-  setTempo(tempo) {
-    this.tempo = tempo;
-  }
-
-  setNoteResolution(index) {
-    this.noteResolution = index;
+    this.uiData = {
+      currentBeat: 0,
+      toggleLabel: 'START',
+      tempo: 120,
+      noteResolution: QUARTER_NOTE
+    };
   }
 
   createTimerWorker() {
@@ -74,13 +64,13 @@ class Metronome {
   nextNote() {
     // Advance current note and time by a 16th note...
     // Notice this picks up the CURRENT tempo value to calculate beat length.
-    var secondsPerBeat = 60.0 / this.tempo;
+    var secondsPerBeat = 60.0 / this.uiData.tempo;
     // Add beat length to last beat time
     this.nextNoteTime += 0.25 * secondsPerBeat;
     // Advance the beat number, wrapping to zero
     this.current16thNote = (this.current16thNote + 1) % 16;
     if (this.current16thNote == 0) {
-      this.incrementBeatCounter();
+      this.uiData.currentBeat += 1;
     }
 
     if (!this.songChart.tick()) {
@@ -93,9 +83,9 @@ class Metronome {
     // Append note in queue for visualization.
     this.viz.appendNote({note: beatNumber, time: time});
 
-    if ((this.noteResolution == EIGHTH_NOTE) && (beatNumber % 2))
+    if ((this.uiData.noteResolution == EIGHTH_NOTE) && (beatNumber % 2))
       return;  // we're not playing non-8th 16th notes
-    if ((this.noteResolution == QUARTER_NOTE) && (beatNumber % 4))
+    if ((this.uiData.noteResolution == QUARTER_NOTE) && (beatNumber % 4))
       return;  // we're not playing non-quarter 8th notes
 
     var freq;
@@ -129,20 +119,23 @@ class Metronome {
 
   /** Starts the metronome. */
   start() {
-    this.isPlaying = true;
-    this.current16thNote = 0;
-    this.beatCounter = 0;
-    this.nextNoteTime = this.audioContext.currentTime;
-    this.timerWorker.postMessage('START');
-    this.domStartButton.innerText = 'STOP';
+    if (!this.isPlaying) {
+      this.isPlaying = true;
+      this.current16thNote = 0;
+      this.uiData.currentBeat = 0;
+      this.uiData.toggleLabel = 'STOP';
+      this.nextNoteTime = this.audioContext.currentTime;
+      this.timerWorker.postMessage('START');
+    }
   }
 
   stop() {
-    this.isPlaying = false;
-    this.current16thNote = 0;
-    this.beatCounter = 0;
-    this.timerWorker.postMessage('STOP');
-    this.domStartButton.innerText = 'START';
+    if (this.isPlaying) {
+      this.isPlaying = false;
+      this.current16thNote = 0;
+      this.timerWorker.postMessage('STOP');
+      this.uiData.toggleLabel = 'START';
+    }
   }
 
   setSongChart(songChart) {
@@ -150,24 +143,22 @@ class Metronome {
     this.songChart = songChart;
   }
 
-  setBeatCounter(num) {
-    this.beatCounter = num;
-    this.domBeatCounter.innerText = this.beatCounter;
+  getUiData() {
+    return this.uiData;
   }
 
-  incrementBeatCounter() {
-    this.beatCounter += 1;
-    this.domBeatCounter.innerText = this.beatCounter;
+  setTempo(tempo) {
+    this.uiData.tempo = tempo;
   }
 
-  setDomElements(document) {
-    this.domStartButton = document.getElementById('mStartButton');
-    utils.checkIsDefined('startButton', this.domStartButton);
-    this.domStartButton.onclick = (() => { this.toggle() });
-
-    this.domBeatCounter = document.getElementById('mBeatCounter');
-    utils.checkIsDefined('beatCounter', this.domBeatCounter);
-  }
+  tempoHalve() { this.uiData.tempo /= 2; }
+  tempoDecrementBy10() { this.uiData.tempo -= 10; }
+  tempoDecrementBy5() { this.uiData.tempo -= 5; }
+  tempoDecrement() { this.uiData.tempo -= 1; }
+  tempoIncrement() { this.uiData.tempo += 1; }
+  tempoIncrementBy5() { this.uiData.tempo += 5; }
+  tempoIncrementBy10() { this.uiData.tempo += 10; }
+  tempoDouble() { this.uiData.tempo *= 2; }
 }
 
 export {Metronome};

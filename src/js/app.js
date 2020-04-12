@@ -3,31 +3,6 @@ import * as metronomeclass from './metronome.js'
 import * as visualizationclass from './visualization.js'
 import * as songchartclass from './songchart.js'
 
-let nutJson = {
-  "name": "Nứt",
-  "artist": "Ngọt",
-  "tempo": "145",
-  "time_signature": "4/4",
-  "sections": [
-    {
-      "name": "Intro",
-      "measures": 4,
-    },
-    {
-      "name": "Verse",
-      "measures": 4,
-    },
-    {
-      "name": "Prechorus",
-      "measures": 4,
-    },
-    {
-      "name": "Chorus",
-      "measures": 4,
-    }
-  ]
-};
-
 window.init = function() {
   // First, let's shim the requestAnimationFrame API, with a setTimeout fallback
   window.requestAnimFrame = (function() {
@@ -38,8 +13,7 @@ window.init = function() {
         };
   })();
 
-  let songChart = new songchartclass.SongChart(
-    nutJson, document.getElementById('sectionName'));
+  let songChart = new songchartclass.SongChart();
 
   let audio = new audioclass.Audio();
   audio.unlockAudio();
@@ -50,9 +24,27 @@ window.init = function() {
 
   let metronome = new metronomeclass.Metronome(audio, viz);
   metronome.setSongChart(songChart);
-  metronome.setDomElements(document);
 
-  window.metronome = metronome;
+  let vueApp = new Vue({
+    el: '#vueApp',
+    data: {
+      metronome: metronome.getUiData(),
+      songChart: songChart.getUiData()
+    },
+    methods: {
+      metronomeToggle: (() => { metronome.toggle(); }),
+      metronomeStop: (() => { metronome.stop(); }),
+      metronomeTempoHalve: (() => { metronome.tempoHalve(); }),
+      metronomeTempoDecrementBy10: (() => { metronome.tempoDecrementBy10(); }),
+      metronomeTempoDecrementBy5: (() => { metronome.tempoDecrementBy5(); }),
+      metronomeTempoDecrement: (() => { metronome.tempoDecrement(); }),
+      metronomeTempoIncrement: (() => { metronome.tempoIncrement(); }),
+      metronomeTempoIncrementBy5: (() => { metronome.tempoIncrementBy5(); }),
+      metronomeTempoIncrementBy10: (() => { metronome.tempoIncrementBy10(); }),
+      metronomeTempoDouble: (() => { metronome.tempoDouble(); })
+    }
+  });
+
 }
 
 window.addEventListener('load', window.init);

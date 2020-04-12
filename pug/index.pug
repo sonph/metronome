@@ -9,36 +9,43 @@ html(lang='en')
 
     link(rel='stylesheet' type='text/css' href='src/css/app.css')
 
+    script(src='https://cdn.jsdelivr.net/npm/vue/dist/vue.js')
     script(src='//cwilso.github.io/AudioContext-MonkeyPatch/AudioContextMonkeyPatch.js')
     script(src='dist/bundle.js')
 
   body
-    div#controls
-      div#tempoBox Tempo:
-        span#showTempo 120
-        | BPM
-        input#tempo(
-            type='range'
-            min='30.0'
-            max='200.0'
-            step='1'
-            value='120'
-            onInput='metronome.setTempo(event.target.value); document.getElementById("showTempo").innerText=event.target.value;')
-      div Resolution:
-        select(onchange='metronome.setNoteResolution(this.selectedIndex);')
-          option quarter
-          option 8th
-          option 16th
-      div
-        a#mStartButton START
-      //- TODO(sonph): Beat counter and section name are updated on the last
-      //- 16th note of the last measure. It should be on the 1st 16th note of
-      //- the current measure.
-      div
-        | Beat counter:
-        span#mBeatCounter 0
-      div
-        | Current section:
-        span#sectionName
-      div.container
-        canvas#visualization
+    div#vueApp
+      div#controls
+        div#tempoBox
+          div#tempoEditButtons
+            button(v-on:click='metronomeTempoHalve()') ÷2
+            button(v-on:click='metronomeTempoDecrementBy10()') -10
+            button(v-on:click='metronomeTempoDecrementBy5()') -5
+            button(v-on:click='metronomeTempoDecrement()') -1
+            button(v-on:click='metronomeTempoIncrement()') +1
+            button(v-on:click='metronomeTempoIncrementBy5()') +5
+            button(v-on:click='metronomeTempoIncrementBy10()') +10
+            button(v-on:click='metronomeTempoDouble()') ×2
+          input(
+              name='tempo' id='tempo'
+              type='number' min='0' step='1' pattern='[0-9]*' inputmode='numeric'
+              title='beats per minute' placeholder='beats per minute'
+              v-model="metronome.tempo" v-on:change="metronomeStop()")
+        div Resolution:
+          select(v-model="metronome.noteResolution")
+            option(v-bind:value="0" selected) quarter
+            option(v-bind:value="1") 8th
+            option(v-bind:value="2") 16th
+        div
+          a(v-on:click='metronomeToggle()') {{ metronome.toggleLabel }}
+        //- TODO(sonph): Beat counter and section name are updated on the last
+        //- 16th note of the last measure. It should be on the 1st 16th note of
+        //- the current measure.
+        div
+          | Beat counter:
+          span {{ metronome.currentBeat }}
+        div
+          | Current section:
+          span {{ songChart.currentSectionName }}
+        div.container
+          canvas#visualization
