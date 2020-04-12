@@ -57,7 +57,7 @@ class SongChart {
     this.curSectionIndex = 0;
     this.curTick = 0;
     this.uiData.curBeat = 1;
-    this.uiData.curMeasures = 1;
+    this.uiData.curMeasure = 1;
     this.uiData.curSectionName = this.json.sections[this.curSectionIndex].name;
     this.uiData.curSectionLength = this.json.sections[this.curSectionIndex].length;
   }
@@ -96,7 +96,6 @@ class SongChart {
   nextSection() {
     this.curSectionIndex += 1;
     if (this.curSectionIndex >= this.json.sections.length) {
-      this.curSectionIndex = 1;
       this.reset();
       return false;
     }
