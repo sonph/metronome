@@ -135,6 +135,7 @@ class Metronome {
       this.current16thNote = 0;
       this.timerWorker.postMessage('STOP');
       this.uiData.toggleLabel = 'START';
+      this.songChart.reset();
     }
   }
 

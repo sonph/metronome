@@ -45,7 +45,17 @@ html(lang='en')
           | Beat counter:
           span {{ metronome.currentBeat }}
         div
+          div
+            span {{ songChart.name }}
+            | -
+            span {{ songChart.artist }}
           | Current section:
-          span {{ songChart.currentSectionName }}
+          span {{ songChart.curSectionName }}
+          div 
+            span {{ songChart.curMeasure }}
+            | .
+            span {{ songChart.curBeat }}
+            | /
+            span {{ songChart.curSectionLength }}
         div.container
           canvas#visualization
