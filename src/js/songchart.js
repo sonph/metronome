@@ -58,7 +58,12 @@ class SongChart {
       // Current subsection index, or -1 if there is no subsection.
       curSubSectionIndex: -1,
       curSubSectionMeasure: -1,
+
+      // Current total running measures.
+      curRunningMeasures: 1
     };
+
+    this.startingSection = 0;
 
     // Current tick of the beat. 0 to 3 (16th notes).
     this.curTick = 0;
@@ -68,9 +73,24 @@ class SongChart {
   }
 
   reset() {
-    this.uiData.curSectionIndex = 0;
     this.curTick = 0;
     this.uiData.curBeat = 1;
+    this.setStartingFromSection(this.startingSection);
+  }
+
+  /**
+   * Sets the current selected section to play from.
+   * @param {int} index - Selected section index.
+   * @returns The number of measures before this section, plus 1 (first measure
+   *     of this section).
+   */
+  setStartingFromSection(index) {
+    utils.checkState(
+        index < this.json.sections.length,
+        'Selected index: $ while there are only $ sections',
+                      index, this.json.sections.length);
+    this.startingSection = index;
+    this.uiData.curSectionIndex = index;
     this.uiData.curMeasure = 1;
     let section = this.getCurrentSection();
     this.uiData.curSectionName = section.name;
@@ -79,7 +99,15 @@ class SongChart {
     if (subsections.length) {
       this.uiData.curSubSectionIndex = 0;
       this.uiData.curSubSectionMeasure = 1;
+    } else {
+      this.uiData.curSubSectionIndex = -1;
+      this.uiData.curSubSectionMeasure = -1;
     }
+    let s = 0;
+    for (let i = 0; i < index; i++) {
+      s += this.json.sections[i].length * BEATS;
+    }
+    this.uiData.curRunningMeasures = s + 1;  // +1 because it starts from 1.
   }
 
   getCurrentSection() {
@@ -119,6 +147,7 @@ class SongChart {
 
   /** Update next measure. If it's the end of a section, update the next section. */
   nextMeasure() {
+    this.uiData.curRunningMeasures += 1;
     this.uiData.curMeasure += 1;
     let section = this.getCurrentSection();
     if (this.uiData.curMeasure > section.length) {

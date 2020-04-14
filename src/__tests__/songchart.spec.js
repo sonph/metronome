@@ -133,4 +133,29 @@ describe(`Songchart.js tests`, () => {
     let s = new clazz.SongChart(json);
     expect(s.validateSubSectionsLength()).toEqual([]);
   });
+
+  test(`SongChart set starting from`, () => {
+    let json = { "sections": [
+      { "length": 4 }, { "length": 2 }, { "name": "Section2", "length": 1}
+    ]};
+    let s = new clazz.SongChart(json);
+    s.setStartingFromSection(2);
+    expect(s.getUiData().curSectionName).toEqual("Section2");
+    expect(s.getUiData().curSectionIndex).toEqual(2);
+    expect(s.getUiData().curSubSectionIndex).toEqual(-1);
+    expect(s.getUiData().curRunningMeasures).toEqual((4 + 2) * 4 + 1);
+  });
+
+  test(`SongChart reset from starting point`, () => {
+    let json = { "sections": [
+      { "length": 4 }, { "length": 2 }, { "name": "Section2", "length": 1}
+    ]};
+    let s = new clazz.SongChart(json);
+    s.setStartingFromSection(2);
+    s.tick();
+    s.reset();
+    expect(s.getUiData().curSectionName).toEqual("Section2");
+    expect(s.getUiData().curSectionIndex).toEqual(2);
+    expect(s.getUiData().curRunningMeasures).toEqual((4 + 2) * 4 + 1);
+  });
 });

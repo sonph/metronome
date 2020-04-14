@@ -41,7 +41,7 @@ html(lang='en')
       div
         div
           | Measure counter:
-          span {{ metronome.curMeasure }}
+          span {{ songChart.curRunningMeasures }}
         div
           div
             span {{ songChart.name }}
@@ -57,9 +57,12 @@ html(lang='en')
             span {{ songChart.curSectionLength }}
       div#songChart
         div.section-list(v-for='(section, index) in songChart.sections')
-          div.section(v-bind:class='{ selected: index == songChart.curSectionIndex, hide: index < songChart.curSectionIndex }')
+          div.section(
+              v-bind:class='{ selected: index == songChart.curSectionIndex, hide: metronome.isPlaying && index < songChart.curSectionIndex }'
+              v-on:click='metronomeSetStartingFromSection(index)')
             div.section.name {{ index + 1 }}: {{ section.name }} ({{ section.length }})
-            div.subsection(v-for='(subsection, subindex) in section.subsections')
+            div.subsection(
+                v-for='(subsection, subindex) in section.subsections')
               div(v-bind:class='{ selected: index == songChart.curSectionIndex && subindex == songChart.curSubSectionIndex }')
                 | {{ subsection.subname }} (
                 span(v-if='subindex == songChart.curSubSectionIndex') {{ songChart.curSubSectionMeasure }} /
