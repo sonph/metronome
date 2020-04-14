@@ -55,6 +55,7 @@ html(lang='en')
             span {{ songChart.curBeat }}
             | /
             span {{ songChart.curSectionLength }}
+            span(v-if='metronome.isPlaying && songChart.countIn.curCountInMeasure <= songChart.countIn.lengthMeasures') (counting in)
       div#songChart
         div.section-list(v-for='(section, index) in songChart.sections')
           div.section(
