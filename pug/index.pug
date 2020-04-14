@@ -55,12 +55,15 @@ html(lang='en')
             span {{ songChart.curBeat }}
             | /
             span {{ songChart.curSectionLength }}
-      div.container
-        canvas#visualization
       div#songChart
-        div.section(v-for='(section, index) in songChart.sections')
-          div(v-bind:class='{ bold: index == songChart.curSectionIndex, hide: index < songChart.curSectionIndex }')
-            | {{ index }}: {{ section.name }} ({{ section.length }})
+        div.section-list(v-for='(section, index) in songChart.sections')
+          div.section(v-bind:class='{ selected: index == songChart.curSectionIndex, hide: index < songChart.curSectionIndex }')
+            div.section.name {{ index + 1 }}: {{ section.name }} ({{ section.length }})
+            div.subsection(v-for='(subsection, subindex) in section.subsections')
+              div(v-bind:class='{ selected: index == songChart.curSectionIndex && subindex == songChart.curSubSectionIndex }')
+                | {{ subsection.subname }} (
+                span(v-if='subindex == songChart.curSubSectionIndex') {{ songChart.curSubSectionMeasure }} /
+                | {{ subsection.sublength }})
         div
           a(v-on:click='songChartAppendSection()')
             | + Add section

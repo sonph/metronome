@@ -7,13 +7,28 @@ div#controls {
   border: 1px solid #c0c0c0;
 }
 
+div#tempoBox input {
+  font-size: 3em;
+  width: 4em;
+  text-align: center;
+  border: 1px solid #c0c0c0;
+}
+
+div#tempoBox a {
+  padding-right: 1em;
+}
+
 canvas#visualization {
   height: 400px;
   border: 1px solid #c0c0c0;
 }
 
-.bold {
+.section.selected .section.name {
   font-weight: bold;
+}
+
+.subsection {
+  padding-left: 2em;
 }
 
 .hide {

@@ -12,6 +12,16 @@ const NUT_JSON = {
     {
       "name": "Intro",
       "length": 4,
+      "subsections": [
+        {
+          "subname": "Piano",
+          "sublength": 2,
+        },
+        {
+          "subname": "Fill",
+          "sublength": 2,
+        }
+      ]
     },
     {
       "name": "Verse",
@@ -45,6 +55,9 @@ class SongChart {
       curSectionLength: 0,
       curSectionIndex: 0,
       sections: this.json.sections,
+      // Current subsection index, or -1 if there is no subsection.
+      curSubSectionIndex: -1,
+      curSubSectionMeasure: -1,
     };
 
     // Current tick of the beat. 0 to 3 (16th notes).
@@ -59,8 +72,29 @@ class SongChart {
     this.curTick = 0;
     this.uiData.curBeat = 1;
     this.uiData.curMeasure = 1;
-    this.uiData.curSectionName = this.json.sections[this.uiData.curSectionIndex].name;
-    this.uiData.curSectionLength = this.json.sections[this.uiData.curSectionIndex].length;
+    let section = this.getCurrentSection();
+    this.uiData.curSectionName = section.name;
+    this.uiData.curSectionLength = section.length;
+    let subsections = this.getCurrentSubSections();
+    if (subsections.length) {
+      this.uiData.curSubSectionIndex = 0;
+      this.uiData.curSubSectionMeasure = 1;
+    }
+  }
+
+  getCurrentSection() {
+    return this.json.sections[this.uiData.curSectionIndex];
+  }
+
+  /** Returns list of subsections corresponding to the current section, or empty
+   * list if the property does not exist.
+   */
+  getCurrentSubSections() {
+    let currentSection = this.getCurrentSection();
+    if (currentSection.hasOwnProperty('subsections')) {
+      return currentSection.subsections;
+    }
+    return [];
   }
 
   /** Returns false if the end has been reached. */
@@ -86,11 +120,58 @@ class SongChart {
   /** Update next measure. If it's the end of a section, update the next section. */
   nextMeasure() {
     this.uiData.curMeasure += 1;
-    if (this.uiData.curMeasure > this.json.sections[this.uiData.curSectionIndex].length) {
+    let section = this.getCurrentSection();
+    if (this.uiData.curMeasure > section.length) {
       this.uiData.curMeasure = 1;
       return this.nextSection();
+    } else {
+      // Next measure of sub sections within this section.
+      this.nextSubSectionMeasure(/* newSection= */ false);
+      return true;
     }
-    return true;
+  }
+
+  /**
+   * Check and increment sub section measures.
+   * @param newSection If true, this next subsection is of the next section.
+   *     If false, this next subsection is of the same section.
+   */
+  nextSubSectionMeasure(newSection) {
+    if (newSection) {
+      let section = this.getCurrentSection();
+      if (section.hasOwnProperty('subsections')) {
+        // First measure of the first subsection.
+        this.uiData.curSubSectionIndex = 0;
+        this.uiData.curSubSectionMeasure = 1;
+      } else {
+        this.uiData.curSubSectionIndex = -1;
+        this.uiData.curSubSectionMeasure = -1;
+      }
+    } else {
+      if (this.uiData.curSubSectionIndex != -1) {
+        this.uiData.curSubSectionMeasure += 1;
+        let currentSection = this.getCurrentSection();
+        utils.checkState(
+            currentSection.hasOwnProperty('subsections'),
+            '[songchart.js] Current section (index: '
+            + this.uiData.curSectionIndex + ') does not have subsections, yet '
+            + 'incrementing to next subsection');
+        let currentSubSection =
+            currentSection.subsections[this.uiData.curSubSectionIndex];
+        // Measure count starts from 1.
+        if (this.uiData.curSubSectionMeasure > currentSubSection.sublength) {
+          // Next subsection.
+          this.uiData.curSubSectionIndex += 1;
+          utils.checkState(
+            this.uiData.curSubSectionIndex
+                < currentSection.subsections.length,
+            '[songchart.js] Incrementing to next subsection index out of '
+            + ' bound: ' + this.uiData.curSectionIndex + ', subsection index: '
+            + this.uiData.curSubSectionIndex);
+          this.uiData.curSubSectionMeasure = 1;
+        }
+      }
+    }
   }
 
   /** Update next section. Returns false if the end has been reached. */
@@ -100,8 +181,10 @@ class SongChart {
       this.reset();
       return false;
     }
-    this.uiData.curSectionName = this.json.sections[this.uiData.curSectionIndex].name;
-    this.uiData.curSectionLength = this.json.sections[this.uiData.curSectionIndex].length;
+    let section = this.getCurrentSection();
+    this.uiData.curSectionName = section.name;
+    this.uiData.curSectionLength = section.length;
+    this.nextSubSectionMeasure(/* newSection= */ true);
     return true;
   }
 
@@ -114,6 +197,29 @@ class SongChart {
         "name": "Untitled",
         "length": 8,
     });
+  }
+
+  /**
+   * Sum of sub sections lengths must match section's total length. 
+   * @returns List of section indices that violate this condition, or an empty
+   *     list.
+   */
+  validateSubSectionsLength() {
+    let indices = [];
+    for (let i = 0; i < this.json.sections.length; i++) {
+      let section = this.json.sections[i];
+      let sum = 0;
+      if (!section.hasOwnProperty('subsections')) {
+        continue;
+      }
+      for (let j = 0; j < section.subsections.length; j++) {
+        sum += section.subsections[j].length;
+      }
+      if (sum != section.length) {
+        indices.push(i);
+      }
+    }
+    return indices;
   }
 
   /**
