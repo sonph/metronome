@@ -12,9 +12,9 @@ describe(`Utils.js tests`, () => {
   test(`checkState_Fail`, () => {
     global.console = {error: jest.fn()}
 
-    utils.checkState(false, 'msg');
+    utils.checkState(false, 'value: $', 1);
 
-    expect(console.error).toBeCalled();
+    expect(console.error).toBeCalledWith('[ERROR] INVALID STATE: value: 1');
   });
 
   test(`checkIsDefined_Pass`, () => {
@@ -39,5 +39,13 @@ describe(`Utils.js tests`, () => {
     utils.checkIsDefined('var', null);
 
     expect(console.error).toBeCalled();
+  });
+
+  test(`sprintf`, () => {
+    expect(utils.sprintf('$ $', 'hello', 'world')).toEqual('hello world');
+    expect(utils.sprintf('$ $ $ $ $', 123, 3.14, true, null, undefined))
+        .toEqual('123 3.14 true null undefined');
+    expect(utils.sprintf('$', [])).toEqual('');
+    expect(utils.sprintf('$', [1, 2, 3])).toEqual('1,2,3');
   });
 });
