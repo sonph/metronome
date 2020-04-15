@@ -1,22 +1,3 @@
-body {
-  font-family: monospace;
-  font-size: 1.5em;
-}
-
-div#controls {
-  border: 1px solid #c0c0c0;
-}
-
-div#tempoBox input {
-  font-size: 3em;
-  width: 4em;
-  text-align: center;
-  border: 1px solid #c0c0c0;
-}
-
-div#tempoBox a {
-  padding-right: 1em;
-}
 
 canvas#visualization {
   height: 400px;
