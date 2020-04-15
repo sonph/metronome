@@ -12,13 +12,9 @@ yarn install
 ## Development flow
 
 ```bash
-yarn run pug --watch pug/*.pug -o ./
-```
-
-Start web server:
-
-```bash
-python -m SimpleHTTPServer 8000
+yarn pug:watch  # For generating html from pug templates.
+yarn webpack:watch  # For building and bundling javascript.
+yarn webserver  # Starts python webserver.
 ```
 
 Then navigate to http://localhost:8000/
