@@ -10,8 +10,6 @@ const SIXTEENTH_NOTE = 2;
 /** Metronome class for handling scheduling and current beat. */
 class Metronome {
   constructor(audio, viz) {
-    /** @type {boolean} */
-    this.isPlaying = false;
     /** @type {!audio.Audio} */
     this.audio = audio;
     this.audioContext = this.audio.getAudioContext();
@@ -43,7 +41,7 @@ class Metronome {
     this.songChartSkippedFirstNote = false;
 
     this.uiData = {
-      curMeasure: 1,
+      isPlaying: false,
       toggleLabel: 'START',
       tempo: 120,
       noteResolution: QUARTER_NOTE
@@ -72,9 +70,6 @@ class Metronome {
     this.nextNoteTime += 0.25 * secondsPerBeat;
     // Advance the beat number, wrapping to zero
     this.current16thNote = (this.current16thNote + 1) % 16;
-    if (this.current16thNote == 0) {
-      this.uiData.curMeasure += 1;
-    }
 
     if (this.songChartSkippedFirstNote) {
       if (!this.songChart.tick()) {
@@ -117,7 +112,7 @@ class Metronome {
   }
 
   toggle() {
-    if (!this.isPlaying) {
+    if (!this.uiData.isPlaying) {
       this.start();
     } else {
       this.stop();
@@ -126,13 +121,12 @@ class Metronome {
 
   /** Starts the metronome. */
   start() {
-    if (!this.isPlaying) {
+    if (!this.uiData.isPlaying) {
       // Must resume audio context after a user gesture on the page.
       // https://goo.gl/7K7W
       this.audioContext.resume();
-      this.isPlaying = true;
       this.current16thNote = 0;
-      this.uiData.curMeasure = 1;
+      this.uiData.isPlaying = true;
       this.uiData.toggleLabel = 'STOP';
       this.nextNoteTime = this.audioContext.currentTime;
       this.timerWorker.postMessage('START');
@@ -141,8 +135,8 @@ class Metronome {
 
   /** Stops the metronome and resets. For now assumes reset from the beginning. */
   stop() {
-    if (this.isPlaying) {
-      this.isPlaying = false;
+    if (this.uiData.isPlaying) {
+      this.uiData.isPlaying = false;
       this.current16thNote = 0;
       this.timerWorker.postMessage('STOP');
       this.uiData.toggleLabel = 'START';
@@ -162,6 +156,16 @@ class Metronome {
 
   setTempo(tempo) {
     this.uiData.tempo = tempo;
+  }
+
+  /**
+   * Set to start from this selected section, instead of the first section.
+   *   When the metronome stops, it should re-starts from here.
+   * @param {int} index - Selected section index.
+   */
+  setStartingFromSection(index) {
+    utils.checkIsDefined('index', index);
+    this.songChart.setStartingFromSection(index);
   }
 
   tempoHalve() { this.uiData.tempo /= 2; }

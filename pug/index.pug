@@ -5,65 +5,129 @@ html(lang='en')
   head
     meta(charset='utf-8')
     meta(http-equiv='X-UA-Compatible' content='IE=edge')
-    meta(name='viewport' content='width=device-width, initial-scale=1')
+    meta(name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no')
+
+    //- Bootstrap 4.4.1
+    link(rel='stylesheet' type='text/css' href='src/bootstrap/bootstrap.min.css')
+    script(src='src/bootstrap/jquery-3.5.0.min.js')
+    script(src='src/bootstrap/bootstrap.min.js')
+
+    //- Font awesome
+    link(rel='stylesheet' type='text/css' href='src/fontawesome/css/regular.min.css')
+    link(rel='stylesheet' type='text/css' href='src/fontawesome/css/fontawesome.min.css')
 
     link(rel='stylesheet' type='text/css' href='src/css/app.css')
 
-    script(src='https://cdn.jsdelivr.net/npm/vue/dist/vue.js')
-    script(src='//cwilso.github.io/AudioContext-MonkeyPatch/AudioContextMonkeyPatch.js')
+    script(src='src/js/vue.js')
+    script(src='src/js/AudioContextMonkeyPatch.js')
     script(src='dist/bundle.js')
 
   body
-    div#vueApp
-      div#controls
-        div#tempoBox
-          div#tempoEditButtons
-            a(v-on:click='metronomeTempoHalve()') ÷2
-            a(v-on:click='metronomeTempoDecrementBy10()') -10
-            a(v-on:click='metronomeTempoDecrementBy5()') -5
-            a(v-on:click='metronomeTempoDecrement()') -1
-            a(v-on:click='metronomeTempoIncrement()') +1
-            a(v-on:click='metronomeTempoIncrementBy5()') +5
-            a(v-on:click='metronomeTempoIncrementBy10()') +10
-            a(v-on:click='metronomeTempoDouble()') ×2
-          input(
-              name='tempo' id='tempo'
-              type='number' min='0' step='1' pattern='[0-9]*' inputmode='numeric'
-              title='beats per minute' placeholder='beats per minute'
-              v-model="metronome.tempo" v-on:change="metronomeStop()")
-        div Resolution:
-          select(v-model="metronome.noteResolution")
-            option(v-bind:value="0" selected) quarter
-            option(v-bind:value="1") 8th
-            option(v-bind:value="2") 16th
-        div
-          a(v-on:click='metronomeToggle()') {{ metronome.toggleLabel }}
-      div
-        div
-          | Measure counter:
-          span {{ metronome.curMeasure }}
-        div
-          div
+    <div id="vueApp" v-cloak>
+      div#controls.container-fluid.fixed
+        div.row
+          div.col
+            h2.text-center(v-on:click='metronomeToggle()')
+              i.far.fa-lg(v-bind:class='{"fa-stop-circle": metronome.isPlaying, "fa-play-circle": !metronome.isPlaying}')
+
+      div#body.container-fluid
+        hr.invisible
+        div.row
+          div.col
+            h1.text-center.font-weight-light Metronome
+
+        div.row
+          div.col
+            hr
+          div.col-auto Tempo
+          div.col
+            hr
+
+        div.row
+          div.col.input-group.input-group-lg
+            div.input-group-prepend
+              span#tempo.input-group-text BPM
+            input#tempoBox.form-control.text-center(
+                type='number' inputmode='numeric' aria-describedby='tempo'
+                min='0' step='1' pattern='[0-9]+'
+                title='beats per minute' placeholder='beats per minute'
+                v-model='metronome.tempo' v-on:change='metronomeStop()')
+            div.custom-select.text-center
+              select(v-model="metronome.noteResolution")
+                option(v-bind:value="0" selected) qtr
+                option(v-bind:value="1") 8th
+                option(v-bind:value="2") 16th
+
+        hr.invisible
+        div.row
+          div.col-2
+            a.btn.btn-default(v-on:click='metronomeTempoHalve()') ÷2
+          div.col-2
+            a.btn.btn-default(v-on:click='metronomeTempoDecrementBy5()') -5
+          div.col-2
+            a.btn.btn-default(v-on:click='metronomeTempoDecrement()') -1
+          div.col-2
+            a.btn.btn-default(v-on:click='metronomeTempoIncrement()') +1
+          div.col-2
+            a.btn.btn-default(v-on:click='metronomeTempoIncrementBy5()') +5
+          div.col-2
+            a.btn.btn-default(v-on:click='metronomeTempoDouble()') ×2
+        hr.invisible
+
+        div.row
+          div.col
+            hr
+          div.col-auto Song Chart
+          div.col
+            hr
+
+        div.row
+          div.col
             span {{ songChart.name }}
-            | -
+            | &nbsp; - &nbsp;
             span {{ songChart.artist }}
-          | Current section:
-          span {{ songChart.curSectionName }}
-          div 
+
+        div.row
+          div.col-9
+            | Measures: &nbsp;
+            span {{ songChart.curRunningMeasures }}
+          div.col-3
+            span(v-if='metronome.isPlaying && songChart.countIn.curCountInMeasure <= songChart.countIn.lengthMeasures') (counting in)
             span {{ songChart.curMeasure }}
             | .
-            span {{ songChart.curBeat }}
+            span {{ songChart.curBeat }} &nbsp;
             | /
-            span {{ songChart.curSectionLength }}
-      div#songChart
-        div.section-list(v-for='(section, index) in songChart.sections')
-          div.section(v-bind:class='{ selected: index == songChart.curSectionIndex, hide: index < songChart.curSectionIndex }')
-            div.section.name {{ index + 1 }}: {{ section.name }} ({{ section.length }})
-            div.subsection(v-for='(subsection, subindex) in section.subsections')
-              div(v-bind:class='{ selected: index == songChart.curSectionIndex && subindex == songChart.curSubSectionIndex }')
-                | {{ subsection.subname }} (
-                span(v-if='subindex == songChart.curSubSectionIndex') {{ songChart.curSubSectionMeasure }} /
-                | {{ subsection.sublength }})
-        div
-          a(v-on:click='songChartAppendSection()')
-            | + Add section
+            span &nbsp; {{ songChart.curSectionLength }}
+
+        hr
+        div#songChart.row
+          div.col
+            ul.list-group.list-group-flush(v-for='(section, index) in songChart.sections')
+              li.list-group-item(
+                  v-bind:class='{ "list-group-item-primary": index == songChart.curSectionIndex, disabled: metronome.isPlaying && index < songChart.curSectionIndex }'
+                  v-on:click='metronomeSetStartingFromSection(index)')
+                div.section.name
+                  div.row
+                    div.col {{ index + 1 }}: {{ section.name }}
+                    div.col.text-right
+                      span.text-right(v-if='index == songChart.curSectionIndex') {{ songChart.curMeasure }} /
+                      span {{ section.length }}
+                div.subsection.font-weight-light(
+                    v-for='(subsection, subindex) in section.subsections')
+                  div.row(v-bind:class='{ selected: index == songChart.curSectionIndex && subindex == songChart.curSubSectionIndex }')
+                    div.col {{ subsection.subname }}
+                    div.col.text-right
+                      span(v-if='subindex == songChart.curSubSectionIndex') {{ songChart.curSubSectionMeasure }} /
+                      span {{ subsection.sublength }}
+        hr
+        div.row
+          div.col.text-center
+            a(v-on:click='songChartAppendSection()')
+              | + Add section
+        hr.invisible
+
+      div.row.fixed.invisible
+        div.col
+          h2.text-center
+            i.far.fa-lg(v-bind:class='{"fa-stop-circle": metronome.isPlaying, "fa-play-circle": !metronome.isPlaying}')
+    </div>
