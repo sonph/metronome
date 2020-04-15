@@ -1,3 +1,42 @@
+body {
+  font-size: 20px;
+}
+
+.fixed {
+  height: 4em;
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+}
+
+#controls {
+  z-index: 101;
+  width: 100%;
+  position: fixed;
+  bottom: 0;
+  border-top: 1px solid #c0c0c0;
+  background-color: #fff;
+}
+
+#controls .fa-lg {
+  vertical-align: -0.33em;
+}
+
+#title {
+  z-index: 101;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  border-bottom: 1px solid #c0c0c0;
+  background-color: #fff;
+}
+
+/* Do not show html until vue is done loading */
+[v-cloak] {
+  display: none;
+}
+
+#body {
+}
 
 canvas#visualization {
   height: 400px;
@@ -10,12 +49,9 @@ canvas#visualization {
 
 .subsection {
   padding-left: 2em;
+  font-size: 0.7em;
 }
 
 .hide {
   display: none;
-}
-
-a:hover {
-  text-decoration: underline;
 }
