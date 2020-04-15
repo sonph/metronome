@@ -30,11 +30,13 @@ class Viz {
     this.canvasContext.strokeStyle = '#ffffff';
     this.canvasContext.lineWidth = 2;
 
+    /*
     var container = this.document.createElement('div');
     container.className = 'container';
     container.appendChild(this.canvas);
 
     this.document.body.appendChild(container);
+    */
 
     this.window.onorientationchange = () => { this.resetCanvas(); };
     this.window.onresize = () => { this.resetCanvas(); };

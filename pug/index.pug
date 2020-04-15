@@ -20,30 +20,35 @@ html(lang='en')
     script(src='dist/bundle.js')
 
   body
-    div.container-fluid#vueApp
-      div#controls
-        div#tempoBox
-          div#tempoEditButtons
-            a(v-on:click='metronomeTempoHalve()') ÷2
-            a(v-on:click='metronomeTempoDecrementBy10()') -10
-            a(v-on:click='metronomeTempoDecrementBy5()') -5
-            a(v-on:click='metronomeTempoDecrement()') -1
-            a(v-on:click='metronomeTempoIncrement()') +1
-            a(v-on:click='metronomeTempoIncrementBy5()') +5
-            a(v-on:click='metronomeTempoIncrementBy10()') +10
-            a(v-on:click='metronomeTempoDouble()') ×2
-          input(
-              name='tempo' id='tempo'
-              type='number' min='0' step='1' pattern='[0-9]*' inputmode='numeric'
-              title='beats per minute' placeholder='beats per minute'
-              v-model="metronome.tempo" v-on:change="metronomeStop()")
-        div Resolution:
+    div#vueApp.container-fluid
+      div.row
+        h1.text-center Metronome
+      div.row
+        div.col-sm-10
+          a.btn.btn-default(v-on:click='metronomeTempoHalve()') ÷2
+          a.btn.btn-default(v-on:click='metronomeTempoDecrementBy10()') -10
+          a.btn.btn-default(v-on:click='metronomeTempoDecrementBy5()') -5
+          a.btn.btn-default(v-on:click='metronomeTempoDecrement()') -1
+          a.btn.btn-default(v-on:click='metronomeTempoIncrement()') +1
+          a.btn.btn-default(v-on:click='metronomeTempoIncrementBy5()') +5
+          a.btn.btn-default(v-on:click='metronomeTempoIncrementBy10()') +10
+          a.btn.btn-default(v-on:click='metronomeTempoDouble()') ×2
+      div.form-group.form-group-lg.row
+        label.col-xs-3.control-label(for="tempoBox")
+          | Tempo
+        div.col-xs-6
+          input#tempoInput.input-lg(
+            name='tempo'
+            type='number' min='0' step='1' pattern='[0-9]*' inputmode='numeric'
+            title='beats per minute' placeholder='beats per minute'
+            v-model="metronome.tempo" v-on:change="metronomeStop()")
+        div.col-xs-3 Resolution:
           select(v-model="metronome.noteResolution")
             option(v-bind:value="0" selected) quarter
             option(v-bind:value="1") 8th
             option(v-bind:value="2") 16th
-        div
-          a(v-on:click='metronomeToggle()') {{ metronome.toggleLabel }}
+      div.row
+        a.btn.btn-block(v-on:click='metronomeToggle()') {{ metronome.toggleLabel }}
       div
         div
           | Measure counter:
