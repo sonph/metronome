@@ -8,8 +8,10 @@ function checkState(cond, message, ...argv) {
 }
 
 function checkIsDefined(name, value) {
-  if (typeof value !== 'undefined' && value) {
-    return;
+  if (typeof value !== 'undefined') {
+    if (value !== null){
+      return;
+    }
   }
   console.error("[ERROR] %s is not defined: %s", name, value);
 }

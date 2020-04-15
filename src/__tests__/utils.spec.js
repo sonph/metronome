@@ -21,6 +21,9 @@ describe(`Utils.js tests`, () => {
     global.console = {error: jest.fn()}
 
     utils.checkIsDefined('var', '1');
+    utils.checkIsDefined('var', 0);
+    utils.checkIsDefined('var', []);
+    utils.checkIsDefined('var', false);
 
     expect(console.error).not.toBeCalled();
   });
