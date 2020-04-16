@@ -11,29 +11,88 @@ const NUT_JSON = {
   "sections": [
     {
       "name": "Intro",
-      "length": 4,
+      "length": 16,
       "subsections": [
         {
           "subname": "Piano",
-          "sublength": 2,
-        },
-        {
+          "sublength": 8
+        }, {
+          "subname": "Guitar",
+          "sublength": 6
+        }, {
           "subname": "Fill",
-          "sublength": 2,
+          "sublength": 2
         }
       ]
-    },
-    {
+    }, {
+      "name": "Solo",
+      "length": 19,
+      "subsections": [
+        {
+          "subname": "Chorus Groove",
+          "sublength": 8
+        }, {
+          "subname": "Chorus Groove",
+          "sublength": 6
+        }, {
+          "subname": "Fill",
+          "sublength": 5
+        }
+      ]
+    }, {
       "name": "Verse",
-      "length": 4,
-    },
-    {
+      "length": 19,
+      "subsections": [
+        {
+          "subname": "Verse Groove",
+          "sublength": 9
+        }, {
+          "subname": "Verse Groove",
+          "sublength": 9
+        }, {
+          "subname": "Fill",
+          "sublength": 1
+        }
+      ]
+    }, {
       "name": "Prechorus",
-      "length": 4,
-    },
-    {
+      "length": 8,
+      "subsections": [
+        {
+          "subname": "Verse Groove",
+          "sublength": 6
+        }, {
+          "subname": "Fill",
+          "sublength": 2
+        },
+      ]
+    }, {
       "name": "Chorus",
-      "length": 4,
+      "length": 16,
+      "subsections": [
+        {
+          "subname": "Chorus Groove",
+          "sublength": 8
+        }, {
+          "subname": "Chorus Groove",
+          "sublength": 8
+        },
+      ]
+    }, {
+      "name": "Interlude/Solo",
+      "length": 19,
+      "subsections": [
+        {
+          "subname": "Chorus Groove",
+          "sublength": 8
+        }, {
+          "subname": "Chorus Groove",
+          "sublength": 6
+        }, {
+          "subname": "Fill",
+          "sublength": 5
+        },
+      ]
     }
   ]
 };
@@ -44,11 +103,14 @@ class SongChart {
     this.json = json || NUT_JSON;
 
     this.uiData = {
+      enabled: true,
+
       name: this.json.name,
       artist: this.json.artist,
 
       countIn: {
-        lengthMeasures: 0,
+        enabled: true,
+        lengthMeasures: 2,
         curCountInMeasure: 1
       },
 
@@ -84,11 +146,6 @@ class SongChart {
     this.curTick = 0;
     this.uiData.curBeat = 1;
     this.setStartingFromSection(this.startingSection);
-  }
-
-  /** Sets how many measures to count in. */
-  setCountInMeasures(measures) {
-    this.uiData.countIn.lengthMeasures = measures;
   }
 
   /**
@@ -161,7 +218,8 @@ class SongChart {
   /** Update next measure. If it's the end of a section, update the next section. */
   nextMeasure() {
     let countIn = this.uiData.countIn;
-    if (countIn.curCountInMeasure <= countIn.lengthMeasures) {
+    if (countIn.enabled === true
+        && countIn.curCountInMeasure <= countIn.lengthMeasures) {
       countIn.curCountInMeasure += 1;
       // Don't go to the next measure in this call just yet.
       return true;
@@ -247,6 +305,10 @@ class SongChart {
     });
   }
 
+  toggle() {
+    this.uiData.enabled = !this.uiData.enabled;
+  }
+
   /**
    * Sum of sub sections lengths must match section's total length. 
    * @returns List of section indices that violate this condition, or an empty
@@ -268,6 +330,11 @@ class SongChart {
       }
     }
     return indices;
+  }
+
+  // For testing only.
+  setCountInMeasures(measures) {
+    this.uiData.countIn.lengthMeasures = measures;
   }
 
   /**

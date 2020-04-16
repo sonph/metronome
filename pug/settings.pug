@@ -1,0 +1,49 @@
+hr.invisible
+div.row
+  div.col
+  div.col.text-center
+    h2.font-weight-light Settings
+  div.col.text-center.d-flex.align-items-center.justify-content-center
+    h2
+      button(type='button' class='close' aria-label='Close'
+          v-on:click="appHideSettings()")
+        span(aria-hidden='true') &times;
+
+hr
+hr.invisible
+
+div.form-row.align-items-center
+  div.col-auto
+    .form-check.mb-2.custom-control.custom-checkbox
+      input#enableCountIn.custom-control-input(type='checkbox' v-model='songChart.countIn.enabled')
+      label.custom-control-label(for='enableCountIn') &nbsp;Count in measures
+  div.col-3
+    label.sr-only(for='countInMeasures') Measures
+    input#countInMeasures.form-control.mb-2(
+    		:disabled='!songChart.countIn.enabled'
+    		type='numeric' inputmode='numeric' aria-describedby='enable count in' 
+    		min='0' step='1' pattern='[0-9]+' title='count in measures'
+    		placeholder='Measures' v-model='songChart.countIn.lengthMeasures')
+
+hr.invisible
+div.row
+  div.col
+    label(for='sampleSelect') Sound
+    select#sampleSelect.custom-select(v-model='audio.sampleName' v-on:change='audioMaybeLoadSample()')
+      option(value='beep' selected) Beep
+      option(value='hihat') Hi-hat
+
+hr
+div.row
+  div.col
+    span.small
+      a(href='https://thenounproject.com/andrea.verzola1/uploads/?i=173952'
+        target='_blank') Metronome icon
+      |
+      | by
+      |
+      a(href='https://thenounproject.com/andrea.verzola1/'
+        target='_blank') andrea.verzola1
+      |
+      | from the Noun project as favicon. CC license.
+

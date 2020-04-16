@@ -17,8 +17,6 @@ class Metronome {
     this.viz = viz;
 
     this.timerWorker = this.createTimerWorker();
-    // How frequently to call scheduling function in milli.
-    this.lookaheadMsec = 25.0;
     // When the next note is due.
     this.nextNoteTime = 0.0;
     // How far ahead to schedule audio (sec). This is calculated from lookahead,
@@ -28,50 +26,45 @@ class Metronome {
     // What note is currently last scheduled?
     this.current16thNote;
 
-    // Length of 'beep' (in seconds)
-    this.noteLength = 0.05;
-
-    // The start time of the entire sequence.
-    this.startTime;
-
     this.songChart;
     // At the beginning the song chart already starts at the first beat. However
     // the metronome audio has yet to schedule the first note. So don't tick the
-    // the songchart on the first note.
+    // songchart on the first note.
     this.songChartSkippedFirstNote = false;
 
     this.uiData = {
       isPlaying: false,
       toggleLabel: 'START',
-      tempo: 120,
+      tempo: 135,
       noteResolution: QUARTER_NOTE
     };
+
+    // Accumulate current audioContext time for calculating tempo.
+    this.tapTempoPoints = [];
+    // Last audioContext time that the user tapped. Used to reset the points.
+    this.lastTapTime = -1;
   }
 
   createTimerWorker() {
     var w = new Worker('src/js/metronomeworker.js');
     w.onmessage = e => {
       if (e.data == 'TICK') {
-        // console.log('tick!');
         this.scheduler();
-      } else {
-        console.log('message: ' + e.data);
       }
     };
-    w.postMessage({'interval': this.lookaheadMsec});
     return w;
   }
 
   nextNote() {
     // Advance current note and time by a 16th note...
     // Notice this picks up the CURRENT tempo value to calculate beat length.
-    var secondsPerBeat = 60.0 / this.uiData.tempo;
+    let secondsPerBeat = 60.0 / this.uiData.tempo;
     // Add beat length to last beat time
     this.nextNoteTime += 0.25 * secondsPerBeat;
     // Advance the beat number, wrapping to zero
     this.current16thNote = (this.current16thNote + 1) % 16;
 
-    if (this.songChartSkippedFirstNote) {
+    if (this.songChartSkippedFirstNote && this.songChart.getUiData().enabled) {
       if (!this.songChart.tick()) {
         console.log('[metronome.js] Stopping at end of song.');
         this.stop();
@@ -81,24 +74,16 @@ class Metronome {
     }
   }
 
-  scheduleNote(beatNumber, time) {
+  scheduleNote(beatNumber, noteTime) {
     // Append note in queue for visualization.
-    this.viz.appendNote({note: beatNumber, time: time});
+    this.viz.appendNote({note: beatNumber, time: noteTime});
 
     if ((this.uiData.noteResolution == EIGHTH_NOTE) && (beatNumber % 2))
       return;  // we're not playing non-8th 16th notes
     if ((this.uiData.noteResolution == QUARTER_NOTE) && (beatNumber % 4))
       return;  // we're not playing non-quarter 8th notes
 
-    var freq;
-    if (beatNumber % 16 === 0) {  // beat 0 == high pitch
-      freq = 880.0;
-    } else if (beatNumber % 4 === 0) {  // quarter notes = medium pitch
-      freq = 440.0;
-    } else {  // other 16th notes = low pitch
-      freq = 220.0;
-    }
-    this.audio.beep(freq, time, time + this.noteLength);
+    this.audio.scheduleSound(beatNumber, noteTime);
   }
 
   scheduler() {
@@ -120,15 +105,17 @@ class Metronome {
   }
 
   /** Starts the metronome. */
-  start() {
+  start(delayMs = 0.5) {
     if (!this.uiData.isPlaying) {
       // Must resume audio context after a user gesture on the page.
       // https://goo.gl/7K7W
+      this.audio.unlockAudio();
       this.audioContext.resume();
       this.current16thNote = 0;
       this.uiData.isPlaying = true;
       this.uiData.toggleLabel = 'STOP';
-      this.nextNoteTime = this.audioContext.currentTime;
+      // Set first note to be 0.5s from now (when user clicks).
+      this.nextNoteTime = this.audioContext.currentTime + delayMs;
       this.timerWorker.postMessage('START');
     }
   }
@@ -158,14 +145,44 @@ class Metronome {
     this.uiData.tempo = tempo;
   }
 
-  /**
-   * Set to start from this selected section, instead of the first section.
-   *   When the metronome stops, it should re-starts from here.
-   * @param {int} index - Selected section index.
-   */
-  setStartingFromSection(index) {
-    utils.checkIsDefined('index', index);
-    this.songChart.setStartingFromSection(index);
+  tapTempo() {
+    let t = this.audioContext.currentTime;
+    if (this.lastTapTime == -1 || (t - this.lastTapTime) >= 5) {
+      // Remove all taps older than 5 secs.
+      this.tapTempoPoints = [t];
+      this.lastTapTime = t;
+      // Return on first tap.
+      return;
+    }
+    this.tapTempoPoints.push(t);
+    this.lastTapTime = t;
+    // Calculate average interval from maximum last 4 points and set tempo.
+    let sumIntervals = 0;
+    let countIntervals = 0;
+    let lastInterval = -1;
+    let i = this.tapTempoPoints.length - 1;
+    if (!utils.checkState(
+         this.tapTempoPoints.length >= 2,
+         "Expect more than 2 tempo points, got $ points",
+         this.tapTempoPoints.length)) {
+      return;
+    }
+    while(countIntervals <= 4 && i > 0) {
+      let interval = this.tapTempoPoints[i] - this.tapTempoPoints[i - 1];
+      if (lastInterval != -1 && (interval >= 2 * lastInterval || interval <= 0.5 * lastInterval)) {
+        // If a interval is less than half or more than twice the last interval,
+        // that indicates a change in tempo. Don't include them.
+        break;
+      }
+      sumIntervals += interval;
+      countIntervals += 1;
+      i--;
+    }
+    this.uiData.tempo = (60.0 / (sumIntervals / countIntervals)).toFixed(2);
+    if (this.tapTempoPoints.length >= 5 && !this.uiData.isPlaying) {
+      // Starts on the 5th tap (next measure first beat)
+      this.start(/* delayMs= */0);
+    }
   }
 
   tempoHalve() { this.uiData.tempo /= 2; }
