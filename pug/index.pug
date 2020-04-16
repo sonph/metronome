@@ -5,7 +5,7 @@ html(lang='en')
   head
     meta(charset='utf-8')
     meta(http-equiv='X-UA-Compatible' content='IE=edge')
-    meta(name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no')
+    meta(name='viewport' content='width=device-width, initial-scale=1')
 
     //- Bootstrap 4.4.1
     link(rel='stylesheet' type='text/css' href='src/bootstrap/bootstrap.min.css')
@@ -119,6 +119,7 @@ html(lang='en')
                     div.col.text-right
                       span(v-if='subindex == songChart.curSubSectionIndex') {{ songChart.curSubSectionMeasure }} /
                       span {{ subsection.sublength }}
+        a test
         hr
         div.row
           div.col.text-center
