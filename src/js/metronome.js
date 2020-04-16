@@ -113,7 +113,7 @@ class Metronome {
       this.uiData.isPlaying = true;
       this.uiData.toggleLabel = 'STOP';
       // Set first note to be 0.5s from now (when user clicks).
-      this.nextNoteTime = this.audioContext.currentTime;
+      this.nextNoteTime = this.audioContext.currentTime + 0.5;
       this.timerWorker.postMessage('START');
     }
   }

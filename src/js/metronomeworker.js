@@ -1,7 +1,7 @@
 var timerID = null;
 
 // Tick interval in milli seconds.
-const TICK_INTERVAL_MSEC = 100.0;
+const TICK_INTERVAL_MSEC = 25.0;
 
 self.onmessage = function(e) {
   if (e.data == 'START') {
