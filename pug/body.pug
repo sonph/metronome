@@ -59,7 +59,7 @@ div.row
     | Measures: &nbsp;
     span {{ songChart.curRunningMeasures }}
   div.col-3
-    span(v-if='metronome.isPlaying && songChart.countIn.curCountInMeasure <= songChart.countIn.lengthMeasures') (counting in)
+    span(v-if='songChart.countIn.enabled && metronome.isPlaying && songChart.countIn.curCountInMeasure <= songChart.countIn.lengthMeasures') (counting in)
     span {{ songChart.curMeasure }}
     | .
     span {{ songChart.curBeat }} &nbsp;

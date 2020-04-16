@@ -36,7 +36,7 @@ html(lang='en')
       //- TODO(sonph): the shadow classes are removed as soon as
       //- settingsVisible=false and while the settings screen is still animating.
       div#settings.container-fluid.fixed(
-          v-bind:class='{ "show shadow p-3 mb-5 rounded": app.settingsVisible }')
+          v-bind:class='{ "show shadow p-3 mb-5 rounded": app.settings.visible}')
         include settings.pug
 
       div#body.container-fluid

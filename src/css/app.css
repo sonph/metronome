@@ -17,8 +17,9 @@ body {
   background-color: #fff;
 }
 
-.red {
-  color: red;
+input.custom-checkbox {
+  width: 18px;
+  height: 18px;
 }
 
 #controls .fa-lg {

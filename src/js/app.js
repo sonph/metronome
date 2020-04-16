@@ -1,16 +1,18 @@
 export default class App {
   constructor() {
     this.uiData = {
-      settingsVisible: null
+      settings: {
+        visible: false,
+      }
     };
   }
 
   showSettings() {
-    this.uiData.settingsVisible = true;
+    this.uiData.settings.visible = true;
   }
 
   hideSettings() {
-    this.uiData.settingsVisible = false;
+    this.uiData.settings.visible = false;
   }
 
   getUiData() {
