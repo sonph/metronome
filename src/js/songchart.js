@@ -44,6 +44,8 @@ class SongChart {
     this.json = json || NUT_JSON;
 
     this.uiData = {
+      enabled: true,
+
       name: this.json.name,
       artist: this.json.artist,
 
@@ -242,6 +244,10 @@ class SongChart {
         "name": "Untitled",
         "length": 8,
     });
+  }
+
+  toggle() {
+    this.uiData.enabled = !this.uiData.enabled;
   }
 
   /**

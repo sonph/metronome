@@ -64,7 +64,7 @@ class Metronome {
     // Advance the beat number, wrapping to zero
     this.current16thNote = (this.current16thNote + 1) % 16;
 
-    if (this.songChartSkippedFirstNote) {
+    if (this.songChartSkippedFirstNote && this.songChart.getUiData().enabled) {
       if (!this.songChart.tick()) {
         console.log('[metronome.js] Stopping at end of song.');
         this.stop();

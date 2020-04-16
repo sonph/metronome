@@ -50,6 +50,7 @@ window.init = function() {
 
       songChartSetStartingFromSection: ((index) => { songChart.setStartingFromSection(index); }),
       songChartAppendSection: (() => { songChart.appendSection(); }),
+      songChartToggle: (() => { songChart.toggle(); }),
 
       appShowSettings: (() => { app.showSettings(); }),
       appHideSettings: (() => { app.hideSettings(); }),

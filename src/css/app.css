@@ -38,16 +38,6 @@ body {
   transition: right 0.5s;
 }
 
-@keyframes settingsSlideOutToLeft {
-  from { right: 0; }
-  to { right: 100%; }
-}
-
-@keyframes settingsSlideInFromLeft {
-  from { right: 100%; }
-  to { right: 0; }
-}
-
 /* Do not show html until vue is done loading */
 [v-cloak] {
   display: none;
@@ -65,8 +55,4 @@ canvas#visualization {
 .subsection {
   padding-left: 2em;
   font-size: 0.7em;
-}
-
-.hide {
-  display: none;
 }

@@ -44,57 +44,58 @@ div.row
     a.btn.btn-default(v-on:click='metronomeTempoDouble()') ×2
 hr.invisible
 
-div.row
-  div.col
-    hr
-  div.col-auto Song Chart
-  div.col
-    hr
+div#chart.container-fluid.collapse(v-bind:class='{show: songChart.enabled}')
+  div.row
+    div.col
+      hr
+    div.col-auto Song Chart
+    div.col
+      hr
 
-div.row
-  div.col
-    span {{ songChart.name }}
-    | &nbsp; - &nbsp;
-    span {{ songChart.artist }}
+  div.row
+    div.col
+      span {{ songChart.name }}
+      | &nbsp; - &nbsp;
+      span {{ songChart.artist }}
 
-div.row
-  div.col-9
-    | Measures: &nbsp;
-    span {{ songChart.curRunningMeasures }}
-  div.col-3
-    span(v-if='songChart.countIn.enabled && metronome.isPlaying && songChart.countIn.curCountInMeasure <= songChart.countIn.lengthMeasures') (counting in)
-    span {{ songChart.curMeasure }}
-    | .
-    span {{ songChart.curBeat }} &nbsp;
-    | /
-    span &nbsp; {{ songChart.curSectionLength }}
+  div.row
+    div.col-9
+      | Measures: &nbsp;
+      span {{ songChart.curRunningMeasures }}
+    div.col-3
+      span(v-if='songChart.countIn.enabled && metronome.isPlaying && songChart.countIn.curCountInMeasure <= songChart.countIn.lengthMeasures') (counting in)
+      span {{ songChart.curMeasure }}
+      | .
+      span {{ songChart.curBeat }} &nbsp;
+      | /
+      span &nbsp; {{ songChart.curSectionLength }}
 
-hr
-div#songChart.row
-  div.col
-    ul.list-group.list-group-flush(v-for='(section, index) in songChart.sections')
-      li.list-group-item(
-          v-bind:class='{ "list-group-item-primary": index == songChart.curSectionIndex, disabled: metronome.isPlaying && index < songChart.curSectionIndex }'
-          v-on:click='songChartSetStartingFromSection(index)')
-        div.section.name
-          div.row
-            div.col {{ index + 1 }}: {{ section.name }}
-            div.col.text-right
-              span.text-right(v-if='index == songChart.curSectionIndex') {{ songChart.curMeasure }} /
-              span {{ section.length }}
-        div.subsection.font-weight-light(
-            v-for='(subsection, subindex) in section.subsections')
-          div.row(v-bind:class='{ selected: index == songChart.curSectionIndex && subindex == songChart.curSubSectionIndex }')
-            div.col {{ subsection.subname }}
-            div.col.text-right
-              span(v-if='subindex == songChart.curSubSectionIndex') {{ songChart.curSubSectionMeasure }} /
-              span {{ subsection.sublength }}
+  hr
+  div#songChart.row
+    div.col
+      ul.list-group.list-group-flush(v-for='(section, index) in songChart.sections')
+        li.list-group-item(
+            v-bind:class='{ "list-group-item-primary": index == songChart.curSectionIndex, disabled: metronome.isPlaying && index < songChart.curSectionIndex }'
+            v-on:click='songChartSetStartingFromSection(index)')
+          div.section.name
+            div.row
+              div.col {{ index + 1 }}: {{ section.name }}
+              div.col.text-right
+                span.text-right(v-if='index == songChart.curSectionIndex') {{ songChart.curMeasure }} /
+                span {{ section.length }}
+          div.subsection.font-weight-light(
+              v-for='(subsection, subindex) in section.subsections')
+            div.row(v-bind:class='{ selected: index == songChart.curSectionIndex && subindex == songChart.curSubSectionIndex }')
+              div.col {{ subsection.subname }}
+              div.col.text-right
+                span(v-if='subindex == songChart.curSubSectionIndex') {{ songChart.curSubSectionMeasure }} /
+                span {{ subsection.sublength }}
 
-hr
-div.row
-  div.col.text-center
-    a(v-on:click='songChartAppendSection()')
-      | + Add section
+  hr
+  div.row
+    div.col.text-center
+      a(v-on:click='songChartAppendSection()')
+        | + Add section
 hr.invisible
 
 div.row.fixed.invisible

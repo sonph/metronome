@@ -35,7 +35,10 @@ html(lang='en')
           div.col
             h2.text-center(v-on:click='metronomeToggle()')
               i.far.fa-lg(v-bind:class='{"fa-stop-circle": metronome.isPlaying, "fa-play-circle": !metronome.isPlaying}')
-          div.col
+          div.col.text-center.font-weight-light.d-flex.align-items-center.justify-content-center(
+              v-on:click="songChartToggle()"
+              v-bind:class='{ "text-muted": !songChart.enabled }')
+            span Chart
 
       //- TODO(sonph): the shadow classes are removed as soon as
       //- settingsVisible=false and while the settings screen is still animating.
