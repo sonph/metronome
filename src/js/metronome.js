@@ -124,6 +124,7 @@ class Metronome {
     if (!this.uiData.isPlaying) {
       // Must resume audio context after a user gesture on the page.
       // https://goo.gl/7K7W
+      this.audio.unlockAudio();
       this.audioContext.resume();
       this.current16thNote = 0;
       this.uiData.isPlaying = true;
