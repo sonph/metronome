@@ -1,0 +1,29 @@
+hr.invisible
+div.row
+  div.col
+  div.col.text-center
+    h2.font-weight-light Settings
+  div.col.text-center.d-flex.align-items-center.justify-content-center
+    h2
+      button(type='button' class='close' aria-label='Close'
+          v-on:click="appHideSettings()")
+        span(aria-hidden='true') &times;
+
+hr
+hr.invisible
+
+div.form-row.align-items-center
+  div.col-auto
+    .form-check.mb-2
+      input#enableCountIn.custom-checkbox.custom-checkbox-lg.form-check-input(type='checkbox' v-model='songChart.countIn.enabled')
+      label.form-check-label(for='enableCountIn') &nbsp;Count in
+  div.col-3
+    label.sr-only(for='countInMeasures') Measures
+    input#countInMeasures.form-control.mb-2(
+    		:disabled='!songChart.countIn.enabled'
+    		type='numeric' inputmode='numeric' aria-describedby='enable count in' 
+    		min='0' step='1' pattern='[0-9]+' title='count in measures'
+    		placeholder='Measures' v-model='songChart.countIn.lengthMeasures')
+  div.col-auto
+    span measures
+

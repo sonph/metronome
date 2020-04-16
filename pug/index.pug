@@ -26,109 +26,20 @@ html(lang='en')
     <div id="vueApp" v-cloak>
       div#controls.container-fluid.fixed
         div.row
+          div.col.text-center.font-weight-light.d-flex.align-items-center.justify-content-center(v-on:click="appShowSettings()")
+            span Settings
           div.col
             h2.text-center(v-on:click='metronomeToggle()')
               i.far.fa-lg(v-bind:class='{"fa-stop-circle": metronome.isPlaying, "fa-play-circle": !metronome.isPlaying}')
+          div.col
+
+      //- TODO(sonph): the shadow classes are removed as soon as
+      //- settingsVisible=false and while the settings screen is still animating.
+      div#settings.container-fluid.fixed(
+          v-bind:class='{ "show shadow p-3 mb-5 rounded": app.settings.visible}')
+        include settings.pug
 
       div#body.container-fluid
-        hr.invisible
-        div.row
-          div.col
-            h1.text-center.font-weight-light Metronome
+        include body.pug
 
-        div.row
-          div.col
-            hr
-          div.col-auto Tempo
-          div.col
-            hr
-
-        div.row
-          div.col.input-group.input-group-lg
-            div.input-group-prepend
-              span#tempo.input-group-text BPM
-            input#tempoBox.form-control.text-center(
-                type='number' inputmode='numeric' aria-describedby='tempo'
-                min='0' step='1' pattern='[0-9]+'
-                title='beats per minute' placeholder='beats per minute'
-                v-model='metronome.tempo' v-on:change='metronomeStop()')
-            div.custom-select.text-center
-              select(v-model="metronome.noteResolution")
-                option(v-bind:value="0" selected) qtr
-                option(v-bind:value="1") 8th
-                option(v-bind:value="2") 16th
-
-        hr.invisible
-        div.row
-          div.col-2
-            a.btn.btn-default(v-on:click='metronomeTempoHalve()') ÷2
-          div.col-2
-            a.btn.btn-default(v-on:click='metronomeTempoDecrementBy5()') -5
-          div.col-2
-            a.btn.btn-default(v-on:click='metronomeTempoDecrement()') -1
-          div.col-2
-            a.btn.btn-default(v-on:click='metronomeTempoIncrement()') +1
-          div.col-2
-            a.btn.btn-default(v-on:click='metronomeTempoIncrementBy5()') +5
-          div.col-2
-            a.btn.btn-default(v-on:click='metronomeTempoDouble()') ×2
-        hr.invisible
-
-        div.row
-          div.col
-            hr
-          div.col-auto Song Chart
-          div.col
-            hr
-
-        div.row
-          div.col
-            span {{ songChart.name }}
-            | &nbsp; - &nbsp;
-            span {{ songChart.artist }}
-
-        div.row
-          div.col-9
-            | Measures: &nbsp;
-            span {{ songChart.curRunningMeasures }}
-          div.col-3
-            span(v-if='metronome.isPlaying && songChart.countIn.curCountInMeasure <= songChart.countIn.lengthMeasures') (counting in)
-            span {{ songChart.curMeasure }}
-            | .
-            span {{ songChart.curBeat }} &nbsp;
-            | /
-            span &nbsp; {{ songChart.curSectionLength }}
-
-        hr
-        div#songChart.row
-          div.col
-            ul.list-group.list-group-flush(v-for='(section, index) in songChart.sections')
-              li.list-group-item(
-                  v-bind:class='{ "list-group-item-primary": index == songChart.curSectionIndex, disabled: metronome.isPlaying && index < songChart.curSectionIndex }'
-                  v-on:click='metronomeSetStartingFromSection(index)')
-                div.section.name
-                  div.row
-                    div.col {{ index + 1 }}: {{ section.name }}
-                    div.col.text-right
-                      span.text-right(v-if='index == songChart.curSectionIndex') {{ songChart.curMeasure }} /
-                      span {{ section.length }}
-                div.subsection.font-weight-light(
-                    v-for='(subsection, subindex) in section.subsections')
-                  div.row(v-bind:class='{ selected: index == songChart.curSectionIndex && subindex == songChart.curSubSectionIndex }')
-                    div.col {{ subsection.subname }}
-                    div.col.text-right
-                      span(v-if='subindex == songChart.curSubSectionIndex') {{ songChart.curSubSectionMeasure }} /
-                      span {{ subsection.sublength }}
-        a test
-        hr
-        div.row
-          div.col.text-center
-            a(v-on:click='songChartAppendSection()')
-              | + Add section
-        hr.invisible
-
-      div.row.fixed.invisible
-        div.col
-          h2.text-center
-            i.far.fa-lg(v-bind:class='{"fa-stop-circle": metronome.isPlaying, "fa-play-circle": !metronome.isPlaying}')
     </div>
