@@ -46,8 +46,8 @@ window.init = function() {
       metronomeTempoIncrementBy5: (() => { metronome.tempoIncrementBy5(); }),
       metronomeTempoIncrementBy10: (() => { metronome.tempoIncrementBy10(); }),
       metronomeTempoDouble: (() => { metronome.tempoDouble(); }),
-      metronomeSetStartingFromSection: ((index) => { metronome.setStartingFromSection(index); }),
 
+      songChartSetStartingFromSection: ((index) => { songChart.setStartingFromSection(index); }),
       songChartAppendSection: (() => { songChart.appendSection(); }),
 
       appShowSettings: (() => { app.showSettings(); }),

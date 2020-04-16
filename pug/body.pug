@@ -72,7 +72,7 @@ div#songChart.row
     ul.list-group.list-group-flush(v-for='(section, index) in songChart.sections')
       li.list-group-item(
           v-bind:class='{ "list-group-item-primary": index == songChart.curSectionIndex, disabled: metronome.isPlaying && index < songChart.curSectionIndex }'
-          v-on:click='metronomeSetStartingFromSection(index)')
+          v-on:click='songChartSetStartingFromSection(index)')
         div.section.name
           div.row
             div.col {{ index + 1 }}: {{ section.name }}

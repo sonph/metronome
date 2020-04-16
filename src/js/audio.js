@@ -1,4 +1,8 @@
+import * as utils from './utils.js';
+
 const BEEP = 'beep';
+// Duration of beep in seconds.
+const BEEP_DURATION = 0.05;
 
 class Audio {
   constructor() {
@@ -39,14 +43,29 @@ class Audio {
     return this.uiData;
   }
 
-  beep(freq, startTime, stopTime) {
-    console.log('[audio.js] beep()');
+  /**
+   * Schedule the sound at startTime. beatNumber from 0 to 15 (16th notes).
+   */
+  scheduleSound(beatNumber, noteTime) {
+    // console.log('[audio.js] scheduleSound()');
+    console.log(utils.sprintf(
+        '[audio.js] schedule time diff: $ - $ = $',
+        noteTime, this.audioContext.currentTime,
+        noteTime - this.audioContext.currentTime));
     if (this.uiData.sampleName == BEEP) {
+      let freq;
+      if (beatNumber % 16 === 0) {  // beat 0 = high pitch
+        freq = 880.0;
+      } else if (beatNumber % 4 === 0) {  // quarter notes = medium pitch
+        freq = 440.0;
+      } else {  // other 16th notes = low pitch
+        freq = 220.0;
+      }
       let osc = this.audioContext.createOscillator();
       osc.connect(this.audioContext.destination);
       osc.frequency.value = freq;
-      osc.start(startTime);
-      osc.stop(stopTime);
+      osc.start(noteTime);
+      osc.stop(noteTime + BEEP_DURATION);
     } else {
       if (!(this.uiData.sampleName in this.buffers)) {
         console.warn(
@@ -56,7 +75,7 @@ class Audio {
       let node = this.audioContext.createBufferSource();
       node.buffer = this.buffers[this.uiData.sampleName];
       node.connect(this.audioContext.destination);
-      node.start(startTime);
+      node.start(noteTime);
     }
   }
 
