@@ -48,7 +48,8 @@ class SongChart {
       artist: this.json.artist,
 
       countIn: {
-        lengthMeasures: 0,
+        enabled: true,
+        lengthMeasures: 2,
         curCountInMeasure: 1
       },
 
@@ -84,11 +85,6 @@ class SongChart {
     this.curTick = 0;
     this.uiData.curBeat = 1;
     this.setStartingFromSection(this.startingSection);
-  }
-
-  /** Sets how many measures to count in. */
-  setCountInMeasures(measures) {
-    this.uiData.countIn.lengthMeasures = measures;
   }
 
   /**
@@ -161,7 +157,8 @@ class SongChart {
   /** Update next measure. If it's the end of a section, update the next section. */
   nextMeasure() {
     let countIn = this.uiData.countIn;
-    if (countIn.curCountInMeasure <= countIn.lengthMeasures) {
+    if (countIn.enabled === true
+        && countIn.curCountInMeasure <= countIn.lengthMeasures) {
       countIn.curCountInMeasure += 1;
       // Don't go to the next measure in this call just yet.
       return true;

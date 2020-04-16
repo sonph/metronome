@@ -1,5 +1,5 @@
 body {
-  font-size: 20px;
+  font-size: 18px;
 }
 
 .fixed {
@@ -17,25 +17,45 @@ body {
   background-color: #fff;
 }
 
+input.custom-checkbox {
+  width: 18px;
+  height: 18px;
+}
+
 #controls .fa-lg {
   vertical-align: -0.33em;
 }
 
-#title {
-  z-index: 101;
+#settings.show {
+  right: 0;
+  transition: right 0.5s;
+}
+
+#settings {
+  z-index: 105;
   width: 100%;
+  height: 100%;
   position: fixed;
   top: 0;
-  border-bottom: 1px solid #c0c0c0;
+  bottom: 0;
+  right: 100%;
   background-color: #fff;
+  transition: right 0.5s;
+}
+
+@keyframes settingsSlideOutToLeft {
+  from { right: 0; }
+  to { right: 100%; }
+}
+
+@keyframes settingsSlideInFromLeft {
+  from { right: 100%; }
+  to { right: 0; }
 }
 
 /* Do not show html until vue is done loading */
 [v-cloak] {
   display: none;
-}
-
-#body {
 }
 
 canvas#visualization {
