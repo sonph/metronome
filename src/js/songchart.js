@@ -267,6 +267,11 @@ class SongChart {
     return indices;
   }
 
+  // For testing only.
+  setCountInMeasures(measures) {
+    this.uiData.countIn.lengthMeasures = measures;
+  }
+
   /**
    * Fetches song chart from given url.
    * @param {string} url Url.
