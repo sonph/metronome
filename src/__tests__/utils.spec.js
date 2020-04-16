@@ -4,16 +4,18 @@ describe(`Utils.js tests`, () => {
   test(`checkState_Pass`, () => {
     global.console = {error: jest.fn()}
 
-    utils.checkState(1 == 1, 'msg');
+    let b = utils.checkState(1 == 1, 'msg');
 
+    expect(b).toEqual(true);
     expect(console.error).not.toBeCalled();
   });
 
   test(`checkState_Fail`, () => {
     global.console = {error: jest.fn()}
 
-    utils.checkState(false, 'value: $', 1);
+    let b = utils.checkState(false, 'value: $', 1);
 
+    expect(b).toEqual(false);
     expect(console.error).toBeCalledWith('[ERROR] INVALID STATE: value: 1');
   });
 
@@ -23,9 +25,10 @@ describe(`Utils.js tests`, () => {
     utils.checkIsDefined('var', '1');
     utils.checkIsDefined('var', 0);
     utils.checkIsDefined('var', []);
-    utils.checkIsDefined('var', false);
+    let b = utils.checkIsDefined('var', false);
 
     expect(console.error).not.toBeCalled();
+    expect(b).toEqual(true);
   });
 
   test(`checkIsDefined_Fail`, () => {

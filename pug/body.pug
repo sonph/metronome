@@ -24,6 +24,9 @@ div.row
         option(v-bind:value="0" selected) qtr
         option(v-bind:value="1") 8th
         option(v-bind:value="2") 16th
+    div.input-group-append
+      button.btn.btn-outline-secondary(
+          type='button' v-on:click='metronomeTapTempo()') Tap
 
 hr.invisible
 div.row

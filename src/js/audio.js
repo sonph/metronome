@@ -48,10 +48,6 @@ class Audio {
    */
   scheduleSound(beatNumber, noteTime) {
     // console.log('[audio.js] scheduleSound()');
-    console.log(utils.sprintf(
-        '[audio.js] schedule time diff: $ - $ = $',
-        noteTime, this.audioContext.currentTime,
-        noteTime - this.audioContext.currentTime));
     if (this.uiData.sampleName == BEEP) {
       let freq;
       if (beatNumber % 16 === 0) {  // beat 0 = high pitch

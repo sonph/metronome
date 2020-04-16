@@ -38,16 +38,18 @@ class Metronome {
       tempo: 120,
       noteResolution: QUARTER_NOTE
     };
+
+    // Accumulate current audioContext time for calculating tempo.
+    this.tapTempoPoints = [];
+    // Last audioContext time that the user tapped. Used to reset the points.
+    this.lastTapTime = -1;
   }
 
   createTimerWorker() {
     var w = new Worker('src/js/metronomeworker.js');
     w.onmessage = e => {
       if (e.data == 'TICK') {
-        console.log('tick!');
         this.scheduler();
-      } else {
-        console.log('message: ' + e.data);
       }
     };
     return w;
@@ -103,7 +105,7 @@ class Metronome {
   }
 
   /** Starts the metronome. */
-  start() {
+  start(delayMs = 0.5) {
     if (!this.uiData.isPlaying) {
       // Must resume audio context after a user gesture on the page.
       // https://goo.gl/7K7W
@@ -113,7 +115,7 @@ class Metronome {
       this.uiData.isPlaying = true;
       this.uiData.toggleLabel = 'STOP';
       // Set first note to be 0.5s from now (when user clicks).
-      this.nextNoteTime = this.audioContext.currentTime + 0.5;
+      this.nextNoteTime = this.audioContext.currentTime + delayMs;
       this.timerWorker.postMessage('START');
     }
   }
@@ -141,6 +143,46 @@ class Metronome {
 
   setTempo(tempo) {
     this.uiData.tempo = tempo;
+  }
+
+  tapTempo() {
+    let t = this.audioContext.currentTime;
+    if (this.lastTapTime == -1 || (t - this.lastTapTime) >= 5) {
+      // Remove all taps older than 5 secs.
+      this.tapTempoPoints = [t];
+      this.lastTapTime = t;
+      // Return on first tap.
+      return;
+    }
+    this.tapTempoPoints.push(t);
+    this.lastTapTime = t;
+    // Calculate average interval from maximum last 4 points and set tempo.
+    let sumIntervals = 0;
+    let countIntervals = 0;
+    let lastInterval = -1;
+    let i = this.tapTempoPoints.length - 1;
+    if (!utils.checkState(
+         this.tapTempoPoints.length >= 2,
+         "Expect more than 2 tempo points, got $ points",
+         this.tapTempoPoints.length)) {
+      return;
+    }
+    while(countIntervals <= 4 && i > 0) {
+      let interval = this.tapTempoPoints[i] - this.tapTempoPoints[i - 1];
+      if (lastInterval != -1 && (interval >= 2 * lastInterval || interval <= 0.5 * lastInterval)) {
+        // If a interval is less than half or more than twice the last interval,
+        // that indicates a change in tempo. Don't include them.
+        break;
+      }
+      sumIntervals += interval;
+      countIntervals += 1;
+      i--;
+    }
+    this.uiData.tempo = (60.0 / (sumIntervals / countIntervals)).toFixed(2);
+    if (this.tapTempoPoints.length >= 5 && !this.uiData.isPlaying) {
+      // Starts on the 5th tap (next measure first beat)
+      this.start(/* delayMs= */0);
+    }
   }
 
   tempoHalve() { this.uiData.tempo /= 2; }

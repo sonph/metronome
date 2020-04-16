@@ -38,6 +38,7 @@ window.init = function() {
     methods: {
       metronomeToggle: (() => { metronome.toggle(); }),
       metronomeStop: (() => { metronome.stop(); }),
+      metronomeTapTempo: (() => { metronome.tapTempo(); }),
       metronomeTempoHalve: (() => { metronome.tempoHalve(); }),
       metronomeTempoDecrementBy10: (() => { metronome.tempoDecrementBy10(); }),
       metronomeTempoDecrementBy5: (() => { metronome.tempoDecrementBy5(); }),
