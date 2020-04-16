@@ -14,9 +14,9 @@ hr.invisible
 
 div.form-row.align-items-center
   div.col-auto
-    .form-check.mb-2
-      input#enableCountIn.custom-checkbox.custom-checkbox-lg.form-check-input(type='checkbox' v-model='songChart.countIn.enabled')
-      label.form-check-label(for='enableCountIn') &nbsp;Count in
+    .form-check.mb-2.custom-control.custom-checkbox
+      input#enableCountIn.custom-control-input(type='checkbox' v-model='songChart.countIn.enabled')
+      label.custom-control-label(for='enableCountIn') &nbsp;Count in measures
   div.col-3
     label.sr-only(for='countInMeasures') Measures
     input#countInMeasures.form-control.mb-2(
@@ -24,8 +24,6 @@ div.form-row.align-items-center
     		type='numeric' inputmode='numeric' aria-describedby='enable count in' 
     		min='0' step='1' pattern='[0-9]+' title='count in measures'
     		placeholder='Measures' v-model='songChart.countIn.lengthMeasures')
-  div.col-auto
-    span measures
 
 hr.invisible
 div.row

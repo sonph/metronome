@@ -17,11 +17,6 @@ body {
   background-color: #fff;
 }
 
-input.custom-checkbox {
-  width: 18px;
-  height: 18px;
-}
-
 #controls .fa-lg {
   vertical-align: -0.33em;
 }
