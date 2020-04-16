@@ -11,29 +11,88 @@ const NUT_JSON = {
   "sections": [
     {
       "name": "Intro",
-      "length": 4,
+      "length": 16,
       "subsections": [
         {
           "subname": "Piano",
-          "sublength": 2,
-        },
-        {
+          "sublength": 8
+        }, {
+          "subname": "Guitar",
+          "sublength": 6
+        }, {
           "subname": "Fill",
-          "sublength": 2,
+          "sublength": 2
         }
       ]
-    },
-    {
+    }, {
+      "name": "Solo",
+      "length": 19,
+      "subsections": [
+        {
+          "subname": "Chorus Groove",
+          "sublength": 8
+        }, {
+          "subname": "Chorus Groove",
+          "sublength": 6
+        }, {
+          "subname": "Fill",
+          "sublength": 5
+        }
+      ]
+    }, {
       "name": "Verse",
-      "length": 4,
-    },
-    {
+      "length": 19,
+      "subsections": [
+        {
+          "subname": "Verse Groove",
+          "sublength": 9
+        }, {
+          "subname": "Verse Groove",
+          "sublength": 9
+        }, {
+          "subname": "Fill",
+          "sublength": 1
+        }
+      ]
+    }, {
       "name": "Prechorus",
-      "length": 4,
-    },
-    {
+      "length": 8,
+      "subsections": [
+        {
+          "subname": "Verse Groove",
+          "sublength": 6
+        }, {
+          "subname": "Fill",
+          "sublength": 2
+        },
+      ]
+    }, {
       "name": "Chorus",
-      "length": 4,
+      "length": 16,
+      "subsections": [
+        {
+          "subname": "Chorus Groove",
+          "sublength": 8
+        }, {
+          "subname": "Chorus Groove",
+          "sublength": 8
+        },
+      ]
+    }, {
+      "name": "Interlude/Solo",
+      "length": 19,
+      "subsections": [
+        {
+          "subname": "Chorus Groove",
+          "sublength": 8
+        }, {
+          "subname": "Chorus Groove",
+          "sublength": 6
+        }, {
+          "subname": "Fill",
+          "sublength": 5
+        },
+      ]
     }
   ]
 };

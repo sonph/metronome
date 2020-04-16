@@ -35,7 +35,7 @@ class Metronome {
     this.uiData = {
       isPlaying: false,
       toggleLabel: 'START',
-      tempo: 120,
+      tempo: 135,
       noteResolution: QUARTER_NOTE
     };
 
