@@ -26,9 +26,28 @@ html(lang='en')
     <div id="vueApp" v-cloak>
       div#controls.container-fluid.fixed
         div.row
+          div.col.text-center.font-weight-light.d-flex.align-items-center.justify-content-center(v-on:click="appShowSettings()")
+            span Settings
           div.col
             h2.text-center(v-on:click='metronomeToggle()')
               i.far.fa-lg(v-bind:class='{"fa-stop-circle": metronome.isPlaying, "fa-play-circle": !metronome.isPlaying}')
+          div.col
+
+      //- TODO(sonph): the shadow classes are removed as soon as
+      //- settingsVisible=false and while the settings screen is still animating.
+      div#settings.container-fluid.fixed(
+          v-bind:class='{ "show shadow p-3 mb-5 rounded": app.settingsVisible }')
+        hr.invisible
+        div.row
+          div.col
+          div.col.text-center
+            h2.font-weight-light Settings
+          div.col.text-center.d-flex.align-items-center.justify-content-center
+            h2
+              button(type='button' class='close' aria-label='Close'
+                  v-on:click="appHideSettings()")
+                span(aria-hidden='true') &times;
+          hr
 
       div#body.container-fluid
         hr.invisible
@@ -119,7 +138,7 @@ html(lang='en')
                     div.col.text-right
                       span(v-if='subindex == songChart.curSubSectionIndex') {{ songChart.curSubSectionMeasure }} /
                       span {{ subsection.sublength }}
-        a test
+
         hr
         div.row
           div.col.text-center
@@ -127,8 +146,8 @@ html(lang='en')
               | + Add section
         hr.invisible
 
-      div.row.fixed.invisible
-        div.col
-          h2.text-center
-            i.far.fa-lg(v-bind:class='{"fa-stop-circle": metronome.isPlaying, "fa-play-circle": !metronome.isPlaying}')
+        div.row.fixed.invisible
+          div.col
+            h2.text-center
+              i.far.fa-lg(v-bind:class='{"fa-stop-circle": metronome.isPlaying, "fa-play-circle": !metronome.isPlaying}')
     </div>
