@@ -17,8 +17,7 @@ window.init = function() {
   let songChart = new songchartclass.SongChart();
 
   let audio = new audioclass.Audio();
-  audio.unlockAudio();
-  audio.loadAudioFiles();
+  audio.loadSamples();
 
   let viz = new visualizationclass.Viz(window, document, audio);
   viz.initCanvas();
@@ -31,9 +30,10 @@ window.init = function() {
   let vueApp = new Vue({
     el: '#vueApp',
     data: {
+      audio: audio.getUiData(),
       metronome: metronome.getUiData(),
       songChart: songChart.getUiData(),
-      app: app.getUiData()
+      app: app.getUiData(),
     },
     methods: {
       metronomeToggle: (() => { metronome.toggle(); }),
@@ -51,7 +51,9 @@ window.init = function() {
       songChartAppendSection: (() => { songChart.appendSection(); }),
 
       appShowSettings: (() => { app.showSettings(); }),
-      appHideSettings: (() => { app.hideSettings(); })
+      appHideSettings: (() => { app.hideSettings(); }),
+
+      audioMaybeLoadSample: (() => { audio.maybeLoadSample(); })
     }
   });
 
