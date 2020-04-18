@@ -155,6 +155,12 @@ class Metronome {
       return;
     }
     this.tapTempoPoints.push(t);
+    if (this.tapTempoPoints.length <= 1) {
+      console.warn(utils.sprintf(
+          "[metronome.js] Tap tempo got $ points, expected at least 2.",
+          this.tapTempoPoints.length));
+      return;
+    }
     this.lastTapTime = t;
     // Calculate average interval from maximum last 4 points and set tempo.
     let sumIntervals = 0;
@@ -177,6 +183,11 @@ class Metronome {
       sumIntervals += interval;
       countIntervals += 1;
       i--;
+    }
+    let avgInterval = sumIntervals / countIntervals;
+    if (avgInterval <= 0) {
+      console.warn("[metronome.js] Average interval = 0");
+      return;
     }
     this.uiData.tempo = (60.0 / (sumIntervals / countIntervals)).toFixed(2);
     if (this.tapTempoPoints.length >= 5 && !this.uiData.isPlaying) {
