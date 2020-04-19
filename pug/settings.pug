@@ -54,6 +54,16 @@ div.form-row
         placeholder='Measures' v-model.number='songChart.visualCues.redLength')
 
 hr.invisible
+div.form-row.align-items-center
+  div.col
+    .form-check.mb-2.custom-control.custom-checkbox
+      input#flashRedOnFirstBeat.custom-control-input(
+          type='checkbox' v-model='app.settings.flashRedOnFirstBeat')
+      label.custom-control-label(for='flashRedOnFirstBeat')
+        | &nbsp;Flash red on first beat
+
+
+hr.invisible
 div.row
   div.col
     label(for='sampleSelect') Sound

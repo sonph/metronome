@@ -3,6 +3,7 @@ export default class App {
     this.uiData = {
       settings: {
         visible: false,
+        flashRedOnFirstBeat: true
       }
     };
   }

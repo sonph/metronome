@@ -23,7 +23,8 @@ class Metronome {
     // and overlaps with next interval (in case the timer is late)
     this.scheduleAheadTime = 0.1;
 
-    // What note is currently last scheduled?
+    // Note that was last scheduled. Do not rely on this for UI since it won't
+    // be in sync.
     this.current16thNote;
 
     this.songChart;
