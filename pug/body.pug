@@ -76,7 +76,12 @@ div#chart.container-fluid.collapse(v-bind:class='{show: songChart.enabled}')
     div.col
       ul.list-group.list-group-flush(v-for='(section, index) in songChart.sections')
         li.list-group-item(
-            v-bind:class='{ "list-group-item-primary": index == songChart.curSectionIndex, disabled: metronome.isPlaying && index < songChart.curSectionIndex }'
+            v-bind:class=('{'
+                + '"list-group-item-primary": index == songChart.curSectionIndex && (!songChart.visualCues.enabled || (songChart.visualCues.enabled && songChart.curMeasure <= section.length - 2)),'
+                + '"list-group-item-warning": index == songChart.curSectionIndex && songChart.visualCues.enabled && songChart.curMeasure > section.length - 2 && songChart.curMeasure <= section.length - 1,'
+                + '"list-group-item-danger": index == songChart.curSectionIndex && songChart.visualCues.enabled && songChart.curMeasure > section.length - 1,'
+                + 'disabled: metronome.isPlaying && index < songChart.curSectionIndex'
+                + '}')
             v-on:click='songChartSetStartingFromSection(index)')
           div.section.name
             div.row
