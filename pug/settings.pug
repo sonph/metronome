@@ -13,7 +13,7 @@ hr
 hr.invisible
 
 div.form-row.align-items-center
-  div.col-auto
+  div.col-9
     .form-check.mb-2.custom-control.custom-checkbox
       input#enableCountIn.custom-control-input(
           type='checkbox' v-model='songChart.countIn.enabled')
@@ -21,10 +21,10 @@ div.form-row.align-items-center
   div.col-3
     label.sr-only(for='countInMeasures') Measures
     input#countInMeasures.form-control.mb-2(
-    		:disabled='!songChart.countIn.enabled'
-    		type='numeric' inputmode='numeric' aria-describedby='enable count in' 
-    		min='0' step='1' pattern='[0-9]+' title='count in measures'
-    		placeholder='Measures' v-model='songChart.countIn.lengthMeasures')
+        :disabled='!songChart.countIn.enabled'
+        type='numeric' inputmode='numeric' aria-describedby='enable count in'
+        min='0' step='1' pattern='[0-9]+' title='count in measures'
+        placeholder='Measures' v-model.number='songChart.countIn.lengthMeasures')
 
 hr.invisible
 div.form-row.align-items-center
@@ -34,6 +34,24 @@ div.form-row.align-items-center
           type='checkbox' v-model='songChart.visualCues.enabled')
       label.custom-control-label(for='enableSectionChangeVisualCues')
         | &nbsp;Enable visual cues (highlights) before section changes
+div.form-row
+  div.col-9
+    label(for='yellowLength') Yellow measures
+  div.col-3
+    input#yellowLength.form-control.mb-2(
+        :disabled='!songChart.visualCues.enabled'
+        type='numeric' inputmode='numeric' aria-describedby='number of yellow measures'
+        min='0' step='1' pattern='[0-9]+' title='yellow measures'
+        placeholder='Measures' v-model.number='songChart.visualCues.yellowLength')
+div.form-row
+  div.col-9
+    label(for='redLength') Red measures
+  div.col-3
+    input#redLength.form-control.mb-2(
+        :disabled='!songChart.visualCues.enabled'
+        type='numeric' inputmode='numeric' aria-describedby='number of red measures'
+        min='0' step='1' pattern='[0-9]+' title='red measures'
+        placeholder='Measures' v-model.number='songChart.visualCues.redLength')
 
 hr.invisible
 div.row

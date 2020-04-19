@@ -116,6 +116,8 @@ class SongChart {
 
       visualCues: {
         enabled: true,
+        yellowLength: 1,
+        redLength: 2,
       },
 
       // Current beat of the measure. 1 to BEATS (4).
