@@ -23,7 +23,8 @@ class Metronome {
     // and overlaps with next interval (in case the timer is late)
     this.scheduleAheadTime = 0.1;
 
-    // What note is currently last scheduled?
+    // Note that was last scheduled. Do not rely on this for UI since it won't
+    // be in sync.
     this.current16thNote;
 
     this.songChart;
@@ -146,6 +147,9 @@ class Metronome {
   }
 
   tapTempo() {
+    // Since we create audioContext on page load, it's in suspended state.
+    // Without this resume() call, `.currentTime` maybe 0.
+    this.audioContext.resume();
     let t = this.audioContext.currentTime;
     if (this.lastTapTime == -1 || (t - this.lastTapTime) >= 5) {
       // Remove all taps older than 5 secs.
@@ -165,7 +169,7 @@ class Metronome {
     // Calculate average interval from maximum last 4 points and set tempo.
     let sumIntervals = 0;
     let countIntervals = 0;
-    let lastInterval = -1;
+    let prevInterval = -1;
     let i = this.tapTempoPoints.length - 1;
     if (!utils.checkState(
          this.tapTempoPoints.length >= 2,
@@ -174,23 +178,27 @@ class Metronome {
       return;
     }
     while(countIntervals <= 4 && i > 0) {
-      let interval = this.tapTempoPoints[i] - this.tapTempoPoints[i - 1];
-      if (lastInterval != -1 && (interval >= 2 * lastInterval || interval <= 0.5 * lastInterval)) {
-        // If a interval is less than half or more than twice the last interval,
-        // that indicates a change in tempo. Don't include them.
+      let curInterval = this.tapTempoPoints[i] - this.tapTempoPoints[i - 1];
+      if (prevInterval != -1
+          && (curInterval >= 1.5 * prevInterval
+              || curInterval <= 0.66 * prevInterval)) {
+        // If the difference between the last interval (newer) vs this current
+        // interval (older) is too much, that indicates a change in tempo. Don't
+        // include the older ones.
         break;
       }
-      sumIntervals += interval;
+      sumIntervals += curInterval;
       countIntervals += 1;
       i--;
     }
     let avgInterval = sumIntervals / countIntervals;
     if (avgInterval <= 0) {
-      console.warn("[metronome.js] Average interval = 0");
+      console.warn("[metronome.js] Average interval = 0 "
+                   + "(perhaps audioContext hasn't been resumed?)");
       return;
     }
     this.uiData.tempo = (60.0 / (sumIntervals / countIntervals)).toFixed(2);
-    if (this.tapTempoPoints.length >= 5 && !this.uiData.isPlaying) {
+    if (this.tapTempoPoints.length == 5 && !this.uiData.isPlaying) {
       // Starts on the 5th tap (next measure first beat)
       this.start(/* delayMs= */0);
     }

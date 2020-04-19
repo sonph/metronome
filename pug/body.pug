@@ -63,32 +63,40 @@ div#chart.container-fluid.collapse(v-bind:class='{show: songChart.enabled}')
   div.row
     div.col-8
       | Measures: &nbsp;
-      span {{ songChart.curRunningMeasures }}
+      span.text-monospace {{ songChart.curRunningMeasures }}
     div.col-4.text-right
-      span {{ songChart.curMeasure }}
-      | .
-      span {{ songChart.curBeat }}&nbsp;
-      | /
-      span &nbsp;{{ songChart.curSectionLength }}
+      span.text-monospace
+        span(v-bind:class='{ "bg-danger text-white": metronome.isPlaying && app.settings.flashRedOnFirstBeat && songChart.curBeat == 1}')
+          span {{ songChart.curMeasure }}
+          | .
+          span {{ songChart.curBeat }}
+        span &nbsp;
+        | /
+        span &nbsp;{{ songChart.curSectionLength }}
 
   hr
   div#songChart.row
     div.col
       ul.list-group.list-group-flush(v-for='(section, index) in songChart.sections')
         li.list-group-item(
-            v-bind:class='{ "list-group-item-primary": index == songChart.curSectionIndex, disabled: metronome.isPlaying && index < songChart.curSectionIndex }'
+            v-bind:class=('{'
+                + '"list-group-item-primary": index == songChart.curSectionIndex && (!songChart.visualCues.enabled || (songChart.visualCues.enabled && songChart.curMeasure <= section.length - (songChart.visualCues.redLength + songChart.visualCues.yellowLength))),'
+                + '"list-group-item-warning": index == songChart.curSectionIndex && songChart.visualCues.enabled && songChart.curMeasure > section.length - (songChart.visualCues.yellowLength + songChart.visualCues.redLength) && songChart.curMeasure <= section.length - songChart.visualCues.redLength,'
+                + '"list-group-item-danger": index == songChart.curSectionIndex && songChart.visualCues.enabled && songChart.curMeasure > section.length - songChart.visualCues.redLength,'
+                + 'disabled: metronome.isPlaying && index < songChart.curSectionIndex'
+                + '}')
             v-on:click='songChartSetStartingFromSection(index)')
           div.section.name
             div.row
               div.col {{ index + 1 }}: {{ section.name }}
-              div.col.text-right
+              div.col.text-right.text-monospace
                 span.text-right(v-if='index == songChart.curSectionIndex') {{ songChart.curMeasure }} /
                 span &nbsp;{{ section.length }}
           div.subsection.font-weight-light(
               v-for='(subsection, subindex) in section.subsections')
             div.row(v-bind:class='{ selected: index == songChart.curSectionIndex && subindex == songChart.curSubSectionIndex }')
               div.col {{ subsection.subname }}
-              div.col.text-right
+              div.col.text-right.text-monospace
                 span(v-if='index == songChart.curSectionIndex && subindex == songChart.curSubSectionIndex') {{ songChart.curSubSectionMeasure }} /
                 span &nbsp;{{ subsection.sublength }}
 

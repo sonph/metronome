@@ -114,6 +114,12 @@ class SongChart {
         curCountInMeasure: 1
       },
 
+      visualCues: {
+        enabled: true,
+        yellowLength: 1,
+        redLength: 2,
+      },
+
       // Current beat of the measure. 1 to BEATS (4).
       curBeat: 1,
       // Current measure of the section. 1 to `measures` in json.
