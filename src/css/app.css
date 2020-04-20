@@ -52,6 +52,10 @@ canvas#visualization {
   font-weight: bold;
 }
 
+#songChart li.list-group-item.hidden {
+  display: none;
+}
+
 .subsection {
   padding-left: 2em;
   font-size: 0.8em;

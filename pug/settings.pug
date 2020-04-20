@@ -62,6 +62,15 @@ div.form-row.align-items-center
       label.custom-control-label(for='flashRedOnFirstBeat')
         | &nbsp;Flash red on first beat
 
+hr.invisible
+div.form-row.align-items-center
+  div.col
+    .form-check.mb-2.custom-control.custom-checkbox
+      input#hidePastSections.custom-control-input(
+          type='checkbox' v-model='app.settings.hidePastSections')
+      label.custom-control-label(for='hidePastSections')
+        | &nbsp;Hide past sections
+
 
 hr.invisible
 div.row

@@ -83,7 +83,8 @@ div#chart.container-fluid.collapse(v-bind:class='{show: songChart.enabled}')
                 + '"list-group-item-primary": index == songChart.curSectionIndex && (!songChart.visualCues.enabled || (songChart.visualCues.enabled && songChart.curMeasure <= section.length - (songChart.visualCues.redLength + songChart.visualCues.yellowLength))),'
                 + '"list-group-item-warning": index == songChart.curSectionIndex && songChart.visualCues.enabled && songChart.curMeasure > section.length - (songChart.visualCues.yellowLength + songChart.visualCues.redLength) && songChart.curMeasure <= section.length - songChart.visualCues.redLength,'
                 + '"list-group-item-danger": index == songChart.curSectionIndex && songChart.visualCues.enabled && songChart.curMeasure > section.length - songChart.visualCues.redLength,'
-                + 'disabled: metronome.isPlaying && index < songChart.curSectionIndex'
+                + 'disabled: metronome.isPlaying && !app.settings.hidePastSections && index < songChart.curSectionIndex,'
+                + 'hidden: metronome.isPlaying && app.settings.hidePastSections && index < songChart.curSectionIndex'
                 + '}')
             v-on:click='songChartSetStartingFromSection(index)')
           div.section.name
