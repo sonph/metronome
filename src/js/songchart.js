@@ -181,7 +181,7 @@ class SongChart {
     }
     let s = 0;
     for (let i = 0; i < index; i++) {
-      s += this.json.sections[i].length * BEATS;
+      s += this.json.sections[i].length;
     }
     this.uiData.curRunningMeasures = s + 1;  // +1 because it starts from 1.
   }

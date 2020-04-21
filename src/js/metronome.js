@@ -76,8 +76,11 @@ class Metronome {
   }
 
   scheduleNote(beatNumber, noteTime) {
-    // Append note in queue for visualization.
-    this.viz.appendNote({note: beatNumber, time: noteTime});
+    // beatNumber is 0 - 15, while we only need 0 - 3 for visualization purpose.
+    if (beatNumber % 4 == 0) {
+      // Append note in queue for visualization.
+      this.viz.appendNote({note: Math.floor(beatNumber / 4), time: noteTime});
+    }
 
     if ((this.uiData.noteResolution == EIGHTH_NOTE) && (beatNumber % 2))
       return;  // we're not playing non-8th 16th notes
@@ -118,6 +121,7 @@ class Metronome {
       // Set first note to be 0.5s from now (when user clicks).
       this.nextNoteTime = this.audioContext.currentTime + delayMs;
       this.timerWorker.postMessage('START');
+      this.viz.startDrawing();
     }
   }
 
@@ -130,6 +134,7 @@ class Metronome {
       this.uiData.toggleLabel = 'START';
       this.songChartSkippedFirstNote = false;
       this.songChart.reset();
+      this.viz.stopDrawing();
     }
   }
 
