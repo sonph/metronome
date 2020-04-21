@@ -64,6 +64,11 @@ body {
   font-size: 0.8em;
 }
 
+hr.small {
+  margin-top: 0.6rem;
+  margin-bottom: 0.6rem;
+}
+
 img#header-icon {
   height: 1em;
   vertical-align: baseline !important;

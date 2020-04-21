@@ -10,7 +10,7 @@ div.row
         span(aria-hidden='true') &times;
 
 hr
-hr.invisible
+hr.invisible.small
 
 div.form-row.align-items-center
   div.col-9
@@ -26,7 +26,7 @@ div.form-row.align-items-center
         min='0' step='1' pattern='[0-9]+' title='count in measures'
         placeholder='Measures' v-model.number='songChart.countIn.lengthMeasures')
 
-hr.invisible
+hr.invisible.small
 div.form-row.align-items-center
   div.col
     .form-check.mb-2.custom-control.custom-checkbox
@@ -53,7 +53,7 @@ div.form-row
         min='0' step='1' pattern='[0-9]+' title='red measures'
         placeholder='Measures' v-model.number='songChart.visualCues.redLength')
 
-hr.invisible
+hr.invisible.small
 div.form-row.align-items-center
   div.col
     .form-check.mb-2.custom-control.custom-checkbox
@@ -62,7 +62,7 @@ div.form-row.align-items-center
       label.custom-control-label(for='flashRedOnFirstBeat')
         | &nbsp;Flash red on first beat
 
-hr.invisible
+hr.invisible.small
 div.form-row.align-items-center
   div.col
     .form-check.mb-2.custom-control.custom-checkbox
@@ -72,7 +72,7 @@ div.form-row.align-items-center
         | &nbsp;Hide past sections
 
 
-hr.invisible
+hr.invisible.small
 div.row
   div.col
     label(for='sampleSelect') Sound

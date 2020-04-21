@@ -30,7 +30,7 @@ div.row
       button.btn.btn-outline-secondary(
           type='button' v-on:click='metronomeTapTempo()') Tap
 
-hr.invisible
+hr.invisible.small
 div.row
   div.col-2
     a.btn.btn-default(v-on:click='metronomeTempoHalve()') ÷2
@@ -44,14 +44,14 @@ div.row
     a.btn.btn-default(v-on:click='metronomeTempoIncrementBy5()') +5
   div.col-2
     a.btn.btn-default(v-on:click='metronomeTempoDouble()') ×2
-hr.invisible
+hr.invisible.small
 
 div.row
   div.col
     div#viz-container
       canvas#viz
 
-hr.invisible
+hr.invisible.small
 
 div#chart.container-fluid.collapse(v-bind:class='{show: songChart.enabled}')
   div.row
@@ -83,7 +83,7 @@ div#chart.container-fluid.collapse(v-bind:class='{show: songChart.enabled}')
         | /
         span &nbsp;{{ songChart.curSectionLength }}
 
-  hr
+  hr.small
   div#songChart.row
     div.col
       ul.list-group.list-group-flush(v-for='(section, index) in songChart.sections')
