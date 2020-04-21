@@ -63,3 +63,8 @@ body {
   padding-left: 2em;
   font-size: 0.8em;
 }
+
+img#header-icon {
+  height: 1em;
+  vertical-align: baseline !important;
+}
