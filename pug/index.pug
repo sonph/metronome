@@ -13,8 +13,8 @@ html(lang='en')
 
     //- Bootstrap 4.4.1
     link(rel='stylesheet' type='text/css' href='src/bootstrap/bootstrap.min.css')
-    script(src='src/bootstrap/jquery-3.5.0.min.js')
-    script(src='src/bootstrap/bootstrap.min.js')
+    script(defer src='src/bootstrap/jquery-3.5.0.min.js')
+    script(defer src='src/bootstrap/bootstrap.min.js')
 
     //- Font awesome
     link(rel='stylesheet' type='text/css' href='src/fontawesome/css/regular.min.css')
@@ -22,9 +22,9 @@ html(lang='en')
 
     link(rel='stylesheet' type='text/css' href='src/css/app.css')
 
-    script(src='src/js/vue.js')
-    script(src='src/js/AudioContextMonkeyPatch.js')
-    script(src='dist/bundle.js')
+    script(defer src='src/js/vue.js')
+    script(defer src='src/js/AudioContextMonkeyPatch.js')
+    script(defer src='dist/bundle.js')
 
   body
     <div id="vueApp" v-cloak>

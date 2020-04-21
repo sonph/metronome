@@ -44,6 +44,13 @@ div.row
     a.btn.btn-default(v-on:click='metronomeTempoDouble()') ×2
 hr.invisible
 
+div.row
+  div.col
+    div#viz-container
+      canvas#viz
+
+hr.invisible
+
 div#chart.container-fluid.collapse(v-bind:class='{show: songChart.enabled}')
   div.row
     div.col

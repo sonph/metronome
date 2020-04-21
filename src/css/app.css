@@ -43,9 +43,12 @@ body {
   display: none;
 }
 
-canvas#visualization {
-  height: 400px;
+#viz-container {
+  width: 100%;
+  height: 4em;
   border: 1px solid #c0c0c0;
+  padding: 0;
+  margin: 0;
 }
 
 .section.selected .section.name {
