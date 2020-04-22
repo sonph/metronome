@@ -15,7 +15,7 @@ class Viz {
     this.positions = [];
 
     // The last 'box' we drew on the screen
-    this.lastNoteDrawn = {note: 0, time: 0};
+    this.lastNoteDrawn = {note: -1, time: 0};
 
     // Notes that have been put into the web audio, and may or may not have
     // played yet. {note, time}
@@ -137,6 +137,7 @@ class Viz {
     if (this.animationLoopId != -1) {
       this.window.cancelAnimationFrame(this.animationLoopId);
       this.animationLoopId = -1;
+      this.lastNoteDrawn = {note: -1, time: 0};
       this.draw(onload=true);
     }
   }
