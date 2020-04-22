@@ -127,7 +127,7 @@ class BufferLoader {
         request.response,
         function(buffer) {
           if (!buffer) {
-            alert('error decoding file data: ' + url);
+            alert('Failed to decode sound file :( ' + url);
             return;
           }
           loader.buffers[sampleName] = buffer;
@@ -135,13 +135,12 @@ class BufferLoader {
             loader.onload(loader.buffers);
         },
         function(error) {
-          console.error('decodeAudioData error', error);
+          console.error('Failed to decode sound file :(', error);
         }
       );
     }
-
     request.onerror = function() {
-      alert('BufferLoader: XHR error');
+      alert('Failed to load sound files :(');
     }
 
     request.send();
