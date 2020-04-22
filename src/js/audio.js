@@ -7,7 +7,9 @@ const BEEP_DURATION = 0.05;
 class Audio {
   constructor() {
     /** @type {!AudioContext} */
-    this.audioContext = new AudioContext();
+    this.audioContext = new AudioContext({ latencyHint: 'interactive' });
+    this.baseLatency = 0;
+
     /** @type {boolean} Whether audio context has been unlocked. */
     this.unlocked = false;
 
@@ -25,7 +27,6 @@ class Audio {
 
   // Play silent buffer to unlock the audio.
   unlockAudio() {
-    console.log('[audio.js] unlock audio');
     if (!this.unlocked) {
       var buffer = this.audioContext.createBuffer(1, 1, 22050);
       var node = this.audioContext.createBufferSource();
@@ -39,6 +40,27 @@ class Audio {
     return this.audioContext;
   }
 
+  /**
+   * Returns audioContext.baseLatency.
+   *
+   * .baseLatency is not supported in a few browsers, including Safari and
+   * Firefox-on-Android.
+   * See https://developer.mozilla.org/en-US/docs/Web/API/AudioContext/baseLatency
+   */
+  getBaseLatency() {
+    if (this.baseLatency != 0) {
+      return this.baseLatency;
+    }
+    if (this.audioContext.state === 'running'
+        && 'baseLatency' in this.audioContext) {
+      this.baseLatency = this.audioContext.baseLatency;
+      utils.log('AudioContext base latency: $ secs',
+          this.baseLatency.toFixed(6));
+      return this.baseLatency;
+    }
+    return 0;
+  }
+
   getUiData() {
     return this.uiData;
   }
@@ -47,7 +69,6 @@ class Audio {
    * Schedule the sound at startTime. beatNumber from 0 to 15 (16th notes).
    */
   scheduleSound(beatNumber, noteTime) {
-    // console.log('[audio.js] scheduleSound()');
     if (this.uiData.sampleName == BEEP) {
       let freq;
       if (beatNumber % 16 === 0) {  // beat 0 = high pitch
@@ -64,8 +85,7 @@ class Audio {
       osc.stop(noteTime + BEEP_DURATION);
     } else {
       if (!(this.uiData.sampleName in this.buffers)) {
-        console.warn(
-            '[audio.js] sample not in sample map: ' + this.uiData.sampleName);
+        utils.warn('sample not in sample map: $', this.uiData.sampleName);
         return;
       }
       let node = this.audioContext.createBufferSource();
@@ -81,7 +101,7 @@ class Audio {
     }
     // Only load new sample if it hasn't been loaded before.
     if (!(this.uiData.sampleName in this.buffers)) {
-      console.log('[audio.js] Loading sample for ' + this.uiData.sampleName);
+      utils.log('Loading sample: $', this.uiData.sampleName);
       new BufferLoader(this.audioContext, [this.uiData.sampleName], this.sampleUrlsMap, (buffers) => {
         Object.keys(buffers).forEach((key, index) => {
           // Insert the fetched buffer along with existing buffers, so we don't

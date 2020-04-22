@@ -1,5 +1,8 @@
+import * as utils from './utils.js';
+
 class Viz {
   constructor(window, document, audio) {
+    this.audio = audio;
     this.audioContext = audio.getAudioContext();
     this.window = window;
     this.document = document;
@@ -12,19 +15,16 @@ class Viz {
     this.positions = [];
 
     // The last 'box' we drew on the screen
-    this.lastNoteDrawn = 0;
+    this.lastNoteDrawn = {note: 0, time: 0};
 
     // Notes that have been put into the web audio, and may or may not have
     // played yet. {note, time}
     this.notesInQueue = [];
   }
 
-  /**
-   * Appends note in the queue for visualization.
-   * @param noteAndTime An object with `note` and `time` props.
-   */
-  appendNote(noteAndTime) {
-    this.notesInQueue.push(noteAndTime);
+  /** Appends note in the queue for visualization. */
+  appendNote(note, time) {
+    this.notesInQueue.push({note: note, time: time});
   }
 
   initCanvas() {
@@ -59,19 +59,24 @@ class Viz {
 
     while (this.notesInQueue.length &&
            this.notesInQueue[0].time <= currentTime) {
-      currentNote = this.notesInQueue[0].note;
+      currentNote = this.notesInQueue[0];
       this.notesInQueue.splice(0, 1);  // remove note from queue
     }
 
     // We only need to draw if the note has moved.
     if (onload || currentNote != this.lastNoteDrawn) {
+      let currentTime = this.audioContext.currentTime;
+      utils.log(
+          '[viz] currentTime: $, note: $, noteTime: $ ($)',
+          currentTime, currentNote.note, currentNote.time.toFixed(6),
+          (currentNote.time - currentTime).toFixed(6));
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
       let x = Math.floor(this.canvas.width / 18);
       let width = x / 2;
       let height = x / 2;
       for (var i = 0; i < 4; i++) {
         let p = this.positions[i];
-        if (i == currentNote) {
+        if (i == Math.floor(currentNote.note / 4)) {
           this.ctx.fillStyle = this.getColor(i);
           this.ctx.fillRect(p.x, p.y, p.width, p.height);
         } else {

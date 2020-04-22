@@ -76,17 +76,21 @@ class Metronome {
   }
 
   scheduleNote(beatNumber, noteTime) {
-    // beatNumber is 0 - 15, while we only need 0 - 3 for visualization purpose.
-    if (beatNumber % 4 == 0) {
-      // Append note in queue for visualization.
-      this.viz.appendNote({note: Math.floor(beatNumber / 4), time: noteTime});
-    }
-
     if ((this.uiData.noteResolution == EIGHTH_NOTE) && (beatNumber % 2))
       return;  // we're not playing non-8th 16th notes
     if ((this.uiData.noteResolution == QUARTER_NOTE) && (beatNumber % 4))
       return;  // we're not playing non-quarter 8th notes
 
+    // beatNumber is 0 - 15, while we only need 0 - 3 for visualization purpose.
+    if (beatNumber % 4 == 0) {
+      // Append note in queue for visualization.
+      // Some mobile browsers may have a problem with audio lagging, where
+      // baseLatency is as much as 0.09 seconds. This causes visualization to run
+      // ahead of the audible sounds.
+      // To fix this, we draw late compare to the actual note time, depending on
+      // how much the baseLatency lag is.
+      this.viz.appendNote(beatNumber, noteTime + this.audio.getBaseLatency());
+    }
     this.audio.scheduleSound(beatNumber, noteTime);
   }
 
@@ -113,8 +117,10 @@ class Metronome {
     if (!this.uiData.isPlaying) {
       // Must resume audio context after a user gesture on the page.
       // https://goo.gl/7K7W
+      if (this.audioContext.state === 'suspended') {
+        this.audioContext.resume();
+      }
       this.audio.unlockAudio();
-      this.audioContext.resume();
       this.current16thNote = 0;
       this.uiData.isPlaying = true;
       this.uiData.toggleLabel = 'STOP';
