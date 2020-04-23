@@ -81,6 +81,21 @@ div.row
       option(value='beep' selected) Beep
       option(value='hihat') Hi-hat
 
+hr.invisible.small
+div.form-row
+  div.col
+    label(for='pastebinkey')
+      | PasteBin API Key
+      span(v-if='app.storage.savedShown')
+        span &nbsp;✅
+        span.sr-only success
+    input#pastebinkey.form-control(
+        type='text' placeholder='API KEY'
+        v-model='app.storage.pasteBinKey'
+        v-bind:disabled='!app.storage.available'
+        v-on:click='!app.storage.available && window.alert("Local Storage is not available")'
+        v-on:change='appStorePasteBinKey()')
+
 hr
 div.row
   div.col

@@ -25,7 +25,7 @@ window.init = function() {
   let metronome = new metronomeclass.Metronome(audio, viz);
   metronome.setSongChart(songChart);
 
-  let app = new App();
+  let app = new App(window);
 
   let vueApp = new Vue({
     el: '#vueApp',
@@ -34,6 +34,7 @@ window.init = function() {
       metronome: metronome.getUiData(),
       songChart: songChart.getUiData(),
       app: app.getUiData(),
+      window: window
     },
     methods: {
       metronomeToggle: (() => { metronome.toggle(); }),
@@ -54,6 +55,7 @@ window.init = function() {
 
       appShowSettings: (() => { app.showSettings(); }),
       appHideSettings: (() => { app.hideSettings(); }),
+      appStorePasteBinKey: (() => { app.storePasteBinKey(); }),
 
       audioMaybeLoadSample: (() => { audio.maybeLoadSample(); })
     }
