@@ -8,7 +8,7 @@ class Audio {
   constructor() {
     /** @type {!AudioContext} */
     this.audioContext = new AudioContext({ latencyHint: 'interactive' });
-    this.baseLatency = 0;
+    this.baseLatency = null;
 
     /** @type {boolean} Whether audio context has been unlocked. */
     this.unlocked = false;
@@ -48,12 +48,11 @@ class Audio {
    * See https://developer.mozilla.org/en-US/docs/Web/API/AudioContext/baseLatency
    */
   getBaseLatency() {
-    if (this.baseLatency != 0) {
+    if (this.baseLatency !== null) {
       return this.baseLatency;
     }
-    if (this.audioContext.state === 'running'
-        && 'baseLatency' in this.audioContext) {
-      this.baseLatency = this.audioContext.baseLatency;
+    if (this.audioContext.state === 'running') {
+      this.baseLatency = this.audioContext.baseLatency || 0;
       utils.log('AudioContext base latency: $ secs',
           this.baseLatency.toFixed(6));
       return this.baseLatency;
