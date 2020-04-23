@@ -28,9 +28,9 @@ class Metronome {
     this.current16thNote;
 
     this.songChart;
-    // At the beginning the song chart already starts at the first beat. However
-    // the metronome audio has yet to schedule the first note. So don't tick the
-    // songchart on the first note.
+    // When paused the song chart already starts at the first beat. However
+    // the metronome audio has yet to schedule the first beat. So don't tick the
+    // songchart on the first beat.
     this.songChartSkippedFirstNote = false;
 
     this.uiData = {
@@ -40,6 +40,14 @@ class Metronome {
       noteResolution: QUARTER_NOTE
     };
 
+    // Store note time's plus audio latency. These are used to determine *when*
+    // to make calls that propagate to Vue models, so that data models changes
+    // are sync'ed with audio and visuals.
+    // This acts as a queue, so that each note will make sure to 'tick' the song
+    // chart by one beat. In case things are delayed, the song chart will be
+    // tick'ed once for each note queued up.
+    this.audioDelayedNoteTimes = [];
+
     // Accumulate current audioContext time for calculating tempo.
     this.tapTempoPoints = [];
     // Last audioContext time that the user tapped. Used to reset the points.
@@ -47,7 +55,7 @@ class Metronome {
   }
 
   createTimerWorker() {
-    var w = new Worker('src/js/metronomeworker.js');
+    let w = new Worker('src/js/metronomeworker.js');
     w.onmessage = e => {
       if (e.data == 'TICK') {
         this.scheduler();
@@ -64,15 +72,6 @@ class Metronome {
     this.nextNoteTime += 0.25 * secondsPerBeat;
     // Advance the beat number, wrapping to zero
     this.current16thNote = (this.current16thNote + 1) % 16;
-
-    if (this.songChartSkippedFirstNote && this.songChart.getUiData().enabled) {
-      if (!this.songChart.tick()) {
-        console.log('[metronome.js] Stopping at end of song.');
-        this.stop();
-      }
-    } else {
-      this.songChartSkippedFirstNote = true;
-    }
   }
 
   scheduleNote(beatNumber, noteTime) {
@@ -92,11 +91,48 @@ class Metronome {
       this.viz.appendNote(beatNumber, noteTime + this.audio.getBaseLatency());
     }
     this.audio.scheduleSound(beatNumber, noteTime);
+
+    // Don't advance the song chart here yet. Store the note time and wait until
+    // the next note time is near to update.
+    this.audioDelayedNoteTimes.push(noteTime + this.audio.getBaseLatency());
   }
 
+  maybeTickSongChart() {
+    if (this.songChart.getUiData().enabled) {
+      let currentTime = this.audioContext.currentTime;
+      while(this.audioDelayedNoteTimes.length
+          && this.audioDelayedNoteTimes[0] <= currentTime) {
+        let noteTime = this.audioDelayedNoteTimes[0];
+        utils.log(
+            '[songchart] currentTime: $, noteTime: $ ($)',
+            currentTime.toFixed(6), noteTime.toFixed(6),
+            (noteTime - currentTime).toFixed(6));
+        // Remove note.
+        this.audioDelayedNoteTimes.splice(0, 1);
+        if (!this.songChartSkippedFirstNote) {
+          this.songChartSkippedFirstNote = true;
+          return;
+        }
+        if (!this.songChart.nextBeat()) {
+          console.log('Stopping at end of song.');
+          this.stop();
+          return;
+        }
+      }
+    }
+  }
+
+  /**
+   * Calculate note times and schedule notes for audio and visualization.
+   *
+   * Called once per metronome worker tick.
+   */
   scheduler() {
-    // while there are notes that will need to play before the next interval,
-    // schedule them and advance the pointer.
+    this.maybeTickSongChart();
+
+    // When nextNoteTime (in the future) is near (gap is determined by 
+    // scheduleAheadTime), schedule audio & visuals and advance to the next
+    // note.
     while (this.nextNoteTime <
            (this.audioContext.currentTime + this.scheduleAheadTime)) {
       this.scheduleNote(this.current16thNote, this.nextNoteTime);

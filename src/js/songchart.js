@@ -139,9 +139,6 @@ class SongChart {
 
     this.startingSection = 0;
 
-    // Current tick of the beat. 0 to 3 (16th notes).
-    this.curTick = 0;
-
     // Update uiData based on JSON data, e.g. section name and length.
     this.reset();
   }
@@ -149,7 +146,6 @@ class SongChart {
   reset() {
     this.uiData.countIn.curCountInMeasure = 1;
 
-    this.curTick = 0;
     this.uiData.curBeat = 1;
     this.setStartingFromSection(this.startingSection);
   }
@@ -199,16 +195,6 @@ class SongChart {
       return currentSection.subsections;
     }
     return [];
-  }
-
-  /** Returns false if the end has been reached. */
-  tick() {
-    this.curTick += 1;
-    if (this.curTick >= 4) {
-      this.curTick = 0;
-      return this.nextBeat();
-    }
-    return true;
   }
 
   /** Update next beat. If it's the end of a measure, update the next measure. */
