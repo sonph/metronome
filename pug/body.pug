@@ -21,11 +21,10 @@ div.row
         min='0' step='1' pattern='[0-9]+'
         title='beats per minute' placeholder='beats per minute'
         v-model='metronome.tempo' v-on:change='metronomeStop()')
-    div.custom-select.text-center
-      select(v-model="metronome.noteResolution")
-        option(v-bind:value="0" selected) qtr
-        option(v-bind:value="1") 8th
-        option(v-bind:value="2") 16th
+    select.custom-select(v-model="metronome.noteResolution")
+      option(v-bind:value="0" selected) qtr
+      option(v-bind:value="1") 8th
+      option(v-bind:value="2") 16th
     div.input-group-append
       button.btn.btn-outline-secondary(
           type='button' v-on:click='metronomeTapTempo()') Tap

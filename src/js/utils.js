@@ -19,4 +19,12 @@ function checkIsDefined(name, value) {
   return false;
 }
 
-export { checkState, checkIsDefined, sprintf };
+function log(message, ...argv) {
+  console.log(sprintf(message, ...argv));
+}
+
+function warn(message, ...argv) {
+  console.warn(sprintf(message, ...argv));
+}
+
+export { checkState, checkIsDefined, sprintf, log, warn };
