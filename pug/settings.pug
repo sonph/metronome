@@ -84,17 +84,32 @@ div.row
 hr.invisible.small
 div.form-row
   div.col
-    label(for='pastebinkey')
+    label(for='apikey')
       | PasteBin API Key
       span(v-if='app.storage.savedShown')
         span &nbsp;✅
         span.sr-only success
-    input#pastebinkey.form-control(
+    input#apikey.form-control(
         type='text' placeholder='API KEY'
-        v-model='app.storage.pasteBinKey'
+        v-model='app.storage.apiKey'
         v-bind:disabled='!app.storage.available'
         v-on:click='!app.storage.available && window.alert("Local Storage is not available")'
-        v-on:change='appStorePasteBinKey()')
+        v-on:change='appStoreKeys()')
+
+hr.invisible.small
+div.form-row
+  div.col
+    label(for='userkey')
+      | User Session Key
+      span(v-if='app.storage.savedShown')
+        span &nbsp;✅
+        span.sr-only success
+    input#userkey.form-control(
+        type='text' placeholder='USER KEY'
+        v-model='app.storage.userKey'
+        v-bind:disabled='!app.storage.available'
+        v-on:click='!app.storage.available && window.alert("Local Storage is not available")'
+        v-on:change='appStoreKeys()')
 
 hr
 div.row

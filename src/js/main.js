@@ -55,7 +55,7 @@ window.init = function() {
 
       appShowSettings: (() => { app.showSettings(); }),
       appHideSettings: (() => { app.hideSettings(); }),
-      appStorePasteBinKey: (() => { app.storePasteBinKey(); }),
+      appStoreKeys: (() => { app.storeKeys(); }),
 
       audioMaybeLoadSample: (() => { audio.maybeLoadSample(); })
     }

@@ -27,6 +27,7 @@ function storageAvailable(window, type) {
 }
 
 const API_KEY = 'API_KEY';
+const USER_KEY = 'USER_KEY';
 
 export default class Storage {
   constructor(window) {
@@ -38,27 +39,39 @@ export default class Storage {
     return this.storageAvailable;
   }
 
-  storePasteBinKey(key) {
+  store(name, value) {
     if (this.isStorageAvailable()) {
       try {
-        this.window.localStorage.setItem(API_KEY, key);
+        this.window.localStorage.setItem(name, value);
         return true;
       } catch (e) {
-        console.warn('Failed to set store api key in storage: ' + e);
+        console.warn('Failed to store ' + name + ' in storage: ' + e);
         return false;
       }
     }
     return false;
   }
 
-  getPasteBinKey() {
+  get(name) {
     if (this.isStorageAvailable()) {
       // getItem() returns null if value is not stored.
-      let key = this.window.localStorage.getItem(API_KEY);
-      if (key) {
-        return key;
+      let value = this.window.localStorage.getItem(name);
+      if (value) {
+        return value;
       }
     }
     return '';
+  }
+
+  getUserKey() {
+    return this.get(USER_KEY);
+  }
+
+  getApiKey() {
+    return this.get(API_KEY);
+  }
+
+  storeKeys(userKey, apiKey) {
+    return this.store(USER_KEY, userKey) && this.store(API_KEY, apiKey);
   }
 }

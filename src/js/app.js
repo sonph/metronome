@@ -13,7 +13,8 @@ export default class App {
       },
       storage: {
         available: this.storage.isStorageAvailable(),
-        pasteBinKey: this.storage.getPasteBinKey(),
+        apiKey: this.storage.getApiKey(),
+        userKey: this.storage.getUserKey(),
         // Control the `saved!` text when saving api key from input.
         savedShown: false
       }
@@ -28,15 +29,17 @@ export default class App {
     this.uiData.settings.visible = false;
   }
 
-  storePasteBinKey() {
+  storeKeys() {
     this.uiData.storage.savedShown = false;
     if (this.storage.isStorageAvailable()
-        && this.storage.storePasteBinKey(this.uiData.storage.pasteBinKey)) {
+        && this.storage.storeKeys(
+            this.uiData.storage.userKey,
+            this.uiData.storage.apiKey)) {
       this.uiData.storage.savedShown = true;
       this.window.setTimeout(() => {
           this.uiData.storage.savedShown = false; }, 5000);
     } else {
-      this.window.alert('Failed to store PasteBin key in storage :(');
+      this.window.alert('Failed to store keys in local storage :(');
     }
   }
 
