@@ -1,3 +1,5 @@
+import * as u from './utils.js';
+
 export default class Circles {
   constructor(canvas, options={}) {
     this.canvas = canvas;
@@ -56,10 +58,9 @@ export default class Circles {
   }
 
   getColor(noteNumber) {
-    if (noteNumber == 0) {
-      return '#E74C3C';
-    }
-    return '#95A5A6';
+    return u.sprintf(
+        'rgb($, $, $)',
+        50, 150, Math.floor(255 - (255 / this.numBeats) * noteNumber));
   }
 
   /** Change how many beats per measure. */
