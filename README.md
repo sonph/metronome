@@ -11,4 +11,4 @@ I reused code from these projects:
 
 ## Screenshot
 
-![screenshot](screenshot.png)
+<img alt="screenshot" src="screenshot.png" width=200>
