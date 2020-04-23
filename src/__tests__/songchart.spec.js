@@ -40,7 +40,7 @@ describe(`Songchart.js tests`, () => {
     let s = new clazz.SongChart(TEST_JSON);
     s.setCountInMeasures(0);
     expect(s.getUiData().curBeat).toEqual(1);
-    loop(4, () => { s.tick(); });
+    s.nextBeat();
     expect(s.getUiData().curBeat).toEqual(2);
   });
 
@@ -49,7 +49,7 @@ describe(`Songchart.js tests`, () => {
     s.setCountInMeasures(0);
     expect(s.getUiData().curBeat).toEqual(1);
     expect(s.getUiData().curMeasure).toEqual(1);
-    loop(4 * 4, () => { s.tick(); });
+    loop(4, () => { s.nextBeat(); });
     expect(s.getUiData().curBeat).toEqual(1);
     expect(s.getUiData().curMeasure).toEqual(2);
   });
@@ -57,7 +57,7 @@ describe(`Songchart.js tests`, () => {
   test(`SongChart tick to next section`, () => {
     let s = new clazz.SongChart(TEST_JSON);
     s.setCountInMeasures(0);
-    loop(4 * 4 * 4, () => { s.tick(); });
+    loop(4 * 4, () => { s.nextBeat(); });
     expect(s.getUiData().curSectionName).toEqual("Section2");
     expect(s.getUiData().curSectionLength).toEqual(8);
   });
@@ -65,9 +65,9 @@ describe(`Songchart.js tests`, () => {
   test(`SongChart tick returns false on song end`, () => {
     let s = new clazz.SongChart(TEST_JSON);
     s.setCountInMeasures(0);
-    loop(4 * 4 * (4 + 8) - 1, () => { s.tick(); });
+    loop(4 * (4 + 8) - 1, () => { s.nextBeat(); });
     // Last call.
-    expect(s.tick()).toEqual(false);
+    expect(s.nextBeat()).toEqual(false);
     // Reset.
     expect(s.getUiData().curSectionName).toEqual("Section1");
     expect(s.getUiData().curSectionLength).toEqual(4);
@@ -91,7 +91,7 @@ describe(`Songchart.js tests`, () => {
     expect(s.getUiData().curSubSectionIndex).toEqual(0);
     expect(s.getUiData().curSubSectionMeasure).toEqual(1);
 
-    loop(4 * 4 * 4, () => { s.tick(); });
+    loop(4 * 4, () => { s.nextBeat(); });
 
     expect(s.getUiData().curSubSectionIndex).toEqual(-1);
     expect(s.getUiData().curSubSectionMeasure).toEqual(-1);
@@ -149,7 +149,7 @@ describe(`Songchart.js tests`, () => {
     expect(s.getUiData().curSectionName).toEqual("Section2");
     expect(s.getUiData().curSectionIndex).toEqual(2);
     expect(s.getUiData().curSubSectionIndex).toEqual(-1);
-    expect(s.getUiData().curRunningMeasures).toEqual((4 + 2) * 4 + 1);
+    expect(s.getUiData().curRunningMeasures).toEqual((4 + 2) + 1);
   });
 
   test(`SongChart reset from starting point`, () => {
@@ -158,19 +158,19 @@ describe(`Songchart.js tests`, () => {
     ]};
     let s = new clazz.SongChart(json);
     s.setStartingFromSection(2);
-    s.tick();
+    s.nextBeat();
     s.reset();
     expect(s.getUiData().curSectionName).toEqual("Section2");
     expect(s.getUiData().curSectionIndex).toEqual(2);
-    expect(s.getUiData().curRunningMeasures).toEqual((4 + 2) * 4 + 1);
+    expect(s.getUiData().curRunningMeasures).toEqual((4 + 2) + 1);
   });
 
   test(`SongChart no count in`, () => {
     let json = { "sections": [ {"length": 1}, {"length": 2} ]};
     let s = new clazz.SongChart(json);
     s.setCountInMeasures(0);
-    // Tick to second measure
-    loop(1 * 4 * 4, () => { s.tick(); });
+    // Advance to second measure
+    loop(1 * 4, () => { s.nextBeat(); });
     expect(s.getUiData().curSectionIndex).toEqual(1);
     expect(s.getUiData().curRunningMeasures).toEqual(2);
   });
@@ -179,8 +179,8 @@ describe(`Songchart.js tests`, () => {
     let json = { "sections": [ {"length": 4} ]};
     let s = new clazz.SongChart(json);
     s.setCountInMeasures(1);
-    // Tick 1 measure counting in. Expect first measure.
-    loop(1 * 4 * 4, () => { s.tick(); });
+    // Advance 1 measure counting in. Expect first measure.
+    loop(1 * 4, () => { s.nextBeat(); });
     expect(s.getUiData().curSectionIndex).toEqual(0);
     expect(s.getUiData().curRunningMeasures).toEqual(1);
   });
@@ -189,9 +189,9 @@ describe(`Songchart.js tests`, () => {
     let json = { "sections": [ {"length": 4} ]};
     let s = new clazz.SongChart(json);
     s.setCountInMeasures(1);
-    loop(1 * 4 * 4, () => { s.tick(); });
+    loop(1 * 4, () => { s.nextBeat(); });
     s.reset();
-    loop(1 * 4 * 4, () => { s.tick(); });
+    loop(1 * 4, () => { s.nextBeat(); });
     expect(s.getUiData().curSectionIndex).toEqual(0);
     expect(s.getUiData().curRunningMeasures).toEqual(1);
   });
@@ -201,7 +201,7 @@ describe(`Songchart.js tests`, () => {
     let s = new clazz.SongChart(json);
     s.setCountInMeasures(2);
     // Tick 2 measures counting in.
-    loop(2 * 4 * 4, () => { s.tick(); });
+    loop(2 * 4, () => { s.nextBeat(); });
     expect(s.getUiData().curSectionIndex).toEqual(0);
     expect(s.getUiData().curRunningMeasures).toEqual(1);
   });
