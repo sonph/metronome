@@ -8,3 +8,7 @@ https://sonpham.me/metronome
 I reused code from these projects:
 
 - [cwilso/metronome](https://github.com/cwilso/metronome)
+
+## Screenshot
+
+![screenshot](screenshot.png)
