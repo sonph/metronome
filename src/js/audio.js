@@ -1,11 +1,18 @@
 import * as utils from './utils.js';
 
-const BEEP = 'beep';
+const BEEP_LOW = 'beep low';
+const BEEP_HIGH = 'beep high';
 // Duration of beep in seconds.
 const BEEP_DURATION = 0.05;
 
+const GAIN_LEVEL_STORAGE_KEY = 'AUDIO_GAIN_LEVEL';
+const GAIN_LEVEL_MAX_VALUE = 1.5;  // Must be in sync with HTML range input max.
+
 class Audio {
-  constructor() {
+  constructor(storage) {
+    /** @type {!Storage} */
+    this.storage = storage;
+
     /** @type {!AudioContext} */
     this.audioContext = new AudioContext({ latencyHint: 'interactive' });
     this.baseLatency = null;
@@ -21,8 +28,14 @@ class Audio {
     this.buffers = {};
 
     this.uiData = {
-      sampleName: BEEP,
+      sampleName: BEEP_HIGH,
+      gainNode: this.audioContext.createGain()
     }
+
+    this.uiData.gainNode.gain.value = Math.min(
+        this.storage.get(GAIN_LEVEL_STORAGE_KEY) || 1.0,
+        GAIN_LEVEL_MAX_VALUE);
+    this.uiData.gainNode.connect(this.audioContext.destination);
   }
 
   // Play silent buffer to unlock the audio.
@@ -68,7 +81,8 @@ class Audio {
    * Schedule the sound at startTime. beatNumber from 0 to 15 (16th notes).
    */
   scheduleSound(beatNumber, noteTime) {
-    if (this.uiData.sampleName == BEEP) {
+    if (this.uiData.sampleName == BEEP_LOW
+        || this.uiData.sampleName == BEEP_HIGH) {
       let freq;
       if (beatNumber % 16 === 0) {  // beat 0 = high pitch
         freq = 880.0;
@@ -77,8 +91,11 @@ class Audio {
       } else {  // other 16th notes = low pitch
         freq = 220.0;
       }
+      if (this.uiData.sampleName == BEEP_HIGH) {
+        freq *= 2;
+      }
       let osc = this.audioContext.createOscillator();
-      osc.connect(this.audioContext.destination);
+      osc.connect(this.uiData.gainNode);
       osc.frequency.value = freq;
       osc.start(noteTime);
       osc.stop(noteTime + BEEP_DURATION);
@@ -89,13 +106,24 @@ class Audio {
       }
       let node = this.audioContext.createBufferSource();
       node.buffer = this.buffers[this.uiData.sampleName];
-      node.connect(this.audioContext.destination);
+      node.connect(this.uiData.gainNode);
       node.start(noteTime);
     }
   }
 
+  /**
+   * In HTML we use v-model.number with a v-on:change reference to this method,
+   * so that the value can be stored in local storage.
+   */
+  updatedGainLevel() {
+    this.storage.store(
+        GAIN_LEVEL_STORAGE_KEY,
+        Math.max(this.uiData.gainNode.gain.value, GAIN_LEVEL_MAX_VALUE));
+  }
+
   maybeLoadSample() {
-    if (this.uiData.sampleName == BEEP) {
+    if (this.uiData.sampleName == BEEP_LOW
+        || this.uiData.sampleName == BEEP_LOW) {
       return;
     }
     // Only load new sample if it hasn't been loaded before.

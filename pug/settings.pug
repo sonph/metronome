@@ -12,6 +12,16 @@ div.row
 hr
 hr.invisible.small
 
+form
+  div.form-group
+    label(for="gainLevel") Audio volume
+    input#gainLevel.form-control-range(
+        type="range" min="0" max="1.5" step="0.05"
+        v-model.number='audio.gainNode.gain.value'
+        v-on:change='audioUpdatedGainLevel()')
+
+hr.invisible.small
+
 div.form-row.align-items-center
   div.col-9
     .form-check.mb-2.custom-control.custom-checkbox
@@ -80,6 +90,30 @@ div.row
         v-model='audio.sampleName' v-on:change='audioMaybeLoadSample()')
       option(value='beep' selected) Beep
       option(value='hihat') Hi-hat
+
+hr
+div.row
+  div.col
+    h3 Shortcuts
+div.row
+  div.col
+    table.table.table-sm.table-borderless.font-weight-light
+      tbody
+        tr
+          td space
+          td Start/stop.
+        tr
+          td t / b
+          td Focus on tempo box or subdivision select box.
+        tr
+          td .
+          td Tap tempo.
+        tr
+          td j / k
+          td Decrease or increase tempo by 1 BPM.
+        tr
+          td m / ,
+          td Decrease or increase tempo by 5 BPM.
 
 hr
 div.row
