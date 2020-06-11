@@ -22,7 +22,13 @@ class Audio {
 
     this.uiData = {
       sampleName: BEEP,
+      gainLevel: 1.0,
     }
+
+    this.gainNode = this.audioContext.createGain();
+    // TODO(sonph): save this gain value in local storage.
+    this.gainNode.gain.value = this.uiData.gainLevel;
+    this.gainNode.connect(this.audioContext.destination);
   }
 
   // Play silent buffer to unlock the audio.
@@ -78,7 +84,7 @@ class Audio {
         freq = 220.0;
       }
       let osc = this.audioContext.createOscillator();
-      osc.connect(this.audioContext.destination);
+      osc.connect(this.gainNode);
       osc.frequency.value = freq;
       osc.start(noteTime);
       osc.stop(noteTime + BEEP_DURATION);
@@ -89,7 +95,7 @@ class Audio {
       }
       let node = this.audioContext.createBufferSource();
       node.buffer = this.buffers[this.uiData.sampleName];
-      node.connect(this.audioContext.destination);
+      node.connect(this.gainNode);
       node.start(noteTime);
     }
   }
