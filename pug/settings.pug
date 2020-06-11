@@ -88,8 +88,9 @@ div.row
     label(for='sampleSelect') Sound
     select#sampleSelect.custom-select(
         v-model='audio.sampleName' v-on:change='audioMaybeLoadSample()')
-      option(value='beep' selected) Beep
-      option(value='hihat') Hi-hat
+      option(value='BEEP_HIGH' selected) Beep high
+      option(value='BEEP_LOW' selected) Beep low
+      option(value='HIHAT') Hi-hat
 
 hr
 div.row

@@ -21,7 +21,7 @@ window.init = function() {
   let songChart = new songchartclass.SongChart();
 
   let audio = new audioclass.Audio(storage);
-  audio.loadSamples();
+  audio.maybeLoadSample();
 
   let viz = new visualizationclass.Viz(window, document, audio);
   viz.initCanvas();

@@ -1,7 +1,7 @@
 import * as utils from './utils.js';
 
-const BEEP_LOW = 'beep low';
-const BEEP_HIGH = 'beep high';
+const BEEP_LOW = 'BEEP_LOW';
+const BEEP_HIGH = 'BEEP_HIGH';
 // Duration of beep in seconds.
 const BEEP_DURATION = 0.05;
 
@@ -21,7 +21,7 @@ class Audio {
     this.unlocked = false;
 
     this.sampleUrlsMap = {
-      'hihat': 'static/sounds/hihat.wav'
+      'HIHAT': 'static/sounds/hihat.wav'
     };
 
     // Map name to buffer.
@@ -123,7 +123,7 @@ class Audio {
 
   maybeLoadSample() {
     if (this.uiData.sampleName == BEEP_LOW
-        || this.uiData.sampleName == BEEP_LOW) {
+        || this.uiData.sampleName == BEEP_HIGH) {
       return;
     }
     // Only load new sample if it hasn't been loaded before.
@@ -137,9 +137,6 @@ class Audio {
         });
       }).load();
     }
-  }
-
-  loadSamples() {
   }
 }
 
