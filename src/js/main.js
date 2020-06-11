@@ -1,8 +1,9 @@
-import * as audioclass from './audio.js'
-import * as metronomeclass from './metronome.js'
-import * as visualizationclass from './visualization.js'
-import * as songchartclass from './songchart.js'
-import App from './app.js'
+import * as audioclass from './audio.js';
+import * as metronomeclass from './metronome.js';
+import * as visualizationclass from './visualization.js';
+import * as songchartclass from './songchart.js';
+import App from './app.js';
+import Shortcuts from './shortcuts.js';
 import Storage from './storage.js';
 
 window.init = function() {
@@ -27,6 +28,8 @@ window.init = function() {
 
   let metronome = new metronomeclass.Metronome(audio, viz);
   metronome.setSongChart(songChart);
+
+  new Shortcuts(window).bindMetronome(metronome);
 
   let app = new App();
 
