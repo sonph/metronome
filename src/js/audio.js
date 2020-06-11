@@ -1,6 +1,7 @@
 import * as utils from './utils.js';
 
-const BEEP = 'beep';
+const BEEP_LOW = 'beep low';
+const BEEP_HIGH = 'beep high';
 // Duration of beep in seconds.
 const BEEP_DURATION = 0.05;
 
@@ -27,7 +28,7 @@ class Audio {
     this.buffers = {};
 
     this.uiData = {
-      sampleName: BEEP,
+      sampleName: BEEP_HIGH,
       gainNode: this.audioContext.createGain()
     }
 
@@ -80,7 +81,8 @@ class Audio {
    * Schedule the sound at startTime. beatNumber from 0 to 15 (16th notes).
    */
   scheduleSound(beatNumber, noteTime) {
-    if (this.uiData.sampleName == BEEP) {
+    if (this.uiData.sampleName == BEEP_LOW
+        || this.uiData.sampleName == BEEP_HIGH) {
       let freq;
       if (beatNumber % 16 === 0) {  // beat 0 = high pitch
         freq = 880.0;
@@ -88,6 +90,9 @@ class Audio {
         freq = 440.0;
       } else {  // other 16th notes = low pitch
         freq = 220.0;
+      }
+      if (this.uiData.sampleName == BEEP_HIGH) {
+        freq *= 2;
       }
       let osc = this.audioContext.createOscillator();
       osc.connect(this.uiData.gainNode);
@@ -117,7 +122,8 @@ class Audio {
   }
 
   maybeLoadSample() {
-    if (this.uiData.sampleName == BEEP) {
+    if (this.uiData.sampleName == BEEP_LOW
+        || this.uiData.sampleName == BEEP_LOW) {
       return;
     }
     // Only load new sample if it hasn't been loaded before.
