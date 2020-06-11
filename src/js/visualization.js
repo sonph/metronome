@@ -84,13 +84,15 @@ class Viz {
   }
 
   resetCanvas() {
-    // Resize canvas. This will also clears the canvas.
     let d = this.document.getElementById('viz-container');
     // TODO(#27): Without setTimeout() method in resetCanvas(),
     // clientWidth for some reason will be 0, though this whole thing is already
     // within window.on('load', {}) event.
     this.canvas.width = d.clientWidth;
     this.canvas.height = d.clientHeight;
+    if (typeof this.painter !== 'undefined') {
+      this.painter.resetCanvas();
+    }
   }
 
   startDrawing() {
