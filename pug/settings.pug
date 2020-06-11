@@ -12,6 +12,16 @@ div.row
 hr
 hr.invisible.small
 
+form
+  div.form-group
+    label(for="gainLevel") Audio volume
+    input#gainLevel.form-control-range(
+        type="range" min="0" max="1.5" step="0.05"
+        v-model.number='audio.gainNode.gain.value'
+        v-on:change='audioUpdatedGainLevel()')
+
+hr.invisible.small
+
 div.form-row.align-items-center
   div.col-9
     .form-check.mb-2.custom-control.custom-checkbox

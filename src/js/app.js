@@ -1,10 +1,5 @@
-import Storage from './storage.js';
-
 export default class App {
-  constructor(window) {
-    this.window = window;
-    this.storage = new Storage(window);
-
+  constructor() {
     this.uiData = {
       settings: {
         visible: false,
