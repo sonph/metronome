@@ -38,6 +38,11 @@ export default class Circles {
     }
   }
 
+  /* Called when window is updated such as resized. */
+  resetCanvas() {
+    this.positions = this.calcSizeAndPosition();
+  }
+
   calcSizeAndPosition() {
     let positions = [];
     let paddingRatio = 0.15;  // 15% of width for padding on each side.
