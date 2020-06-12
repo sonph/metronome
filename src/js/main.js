@@ -60,6 +60,7 @@ window.init = function() {
 
       appShowSettings: (() => { app.showSettings(); }),
       appHideSettings: (() => { app.hideSettings(); }),
+      appPopOut: (() => { app.popOut(); }),
 
       audioMaybeLoadSample: (() => { audio.maybeLoadSample(); }),
       audioUpdatedGainLevel: (() => { audio.updatedGainLevel(); })

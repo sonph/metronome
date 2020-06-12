@@ -1,6 +1,7 @@
 hr.invisible
 div.row
-  div.col
+  div.col.text-center.d-flex.align-items-center.justify-content-center
+    a.small(v-on:click="metronomeStop(); appPopOut();") Popout
   div.col.text-center
     h2.font-weight-light Settings
   div.col.text-center.d-flex.align-items-center.justify-content-center
@@ -10,16 +11,6 @@ div.row
         span(aria-hidden='true') &times;
 
 hr
-hr.invisible.small
-
-form
-  div.form-group
-    label(for="gainLevel") Audio volume
-    input#gainLevel.form-control-range(
-        type="range" min="0" max="1.5" step="0.05"
-        v-model.number='audio.gainNode.gain.value'
-        v-on:change='audioUpdatedGainLevel()')
-
 hr.invisible.small
 
 div.form-row.align-items-center
@@ -44,6 +35,7 @@ div.form-row.align-items-center
           type='checkbox' v-model='songChart.visualCues.enabled')
       label.custom-control-label(for='enableSectionChangeVisualCues')
         | &nbsp;Enable visual cues (highlights) before section changes
+hr.invisible.small
 div.form-row
   div.col-9
     label(for='yellowLength') Yellow measures
@@ -91,11 +83,20 @@ div.row
       option(value='BEEP_HIGH' selected) Beep high
       option(value='BEEP_LOW' selected) Beep low
       option(value='HIHAT') Hi-hat
+hr.invisible.small
+div.row
+  div.col
+    div.form-group
+      label(for="gainLevel") Audio volume
+      input#gainLevel.form-control-range(
+          type="range" min="0" max="1.2" step="0.05"
+          v-model.number='audio.gainNode.gain.value'
+          v-on:change='audioUpdatedGainLevel()')
 
 hr
 div.row
   div.col
-    h3 Shortcuts
+    h4.font-weight-light Shortcuts
 div.row
   div.col
     table.table.table-sm.table-borderless.font-weight-light
