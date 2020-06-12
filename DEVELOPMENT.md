@@ -30,6 +30,12 @@ Then navigate to http://localhost:8000/
   yarn test:watch
   ```
 
+- To always run tests before pushing:
+
+```
+ln -s $PWD/git-hooks/pre-push .git/hooks/pre-push
+```
+
 ## Styleguide
 
 Follow the [Google JavaScript style guide](https://google.github.io/styleguide/jsguide.html).
