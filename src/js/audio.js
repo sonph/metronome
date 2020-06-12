@@ -6,7 +6,7 @@ const BEEP_HIGH = 'BEEP_HIGH';
 const BEEP_DURATION = 0.05;
 
 const GAIN_LEVEL_STORAGE_KEY = 'AUDIO_GAIN_LEVEL';
-const GAIN_LEVEL_MAX_VALUE = 1.5;  // Must be in sync with HTML range input max.
+const GAIN_LEVEL_MAX_VALUE = 1.2;  // Must be in sync with HTML range input max.
 
 class Audio {
   constructor(storage) {
